@@ -25,12 +25,11 @@
 #ifdef WIN32
     #include <shlobj.h>
 #endif
-#ifdef Q_WS_MAC
-    #include <Carbon/Carbon.h>
-#endif
 
 
 #ifdef Q_WS_MAC
+#include <CoreFoundation/CoreFoundation.h>
+
 QDir
 lastfm::dir::bundle()
 {
