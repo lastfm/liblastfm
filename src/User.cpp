@@ -19,6 +19,7 @@
 */
 #include "User.h"
 #include "Track.h"
+#include "Artist.h"
 #include "UrlBuilder.h"
 #include "XmlQuery.h"
 
@@ -402,6 +403,17 @@ User::getFriendsListeningNow( int limit, int page ) const
 
 
 QNetworkReply*
+User::getFriendsThatListenTo( const lastfm::Artist& artist, int limit, int page ) const
+{
+    QMap<QString, QString> map = params( "getFriendsThatListenTo" );
+    map["artist"] = artist.name();
+    map["limit"] = QString::number( limit );
+    map["page"] = QString::number( page );
+    return ws::get( map );
+}
+
+
+QNetworkReply*
 User::getLovedTracks( int limit, int page ) const
 {
     QMap<QString, QString> map = params( "getLovedTracks" );
@@ -620,6 +632,11 @@ User::setImages( const QList<QUrl>& images )
     d->m_images = images;
 }
 
+unsigned short
+User::age() const
+{
+    return d->m_age;
+}
 
 void 
 User::setAge( unsigned short age )

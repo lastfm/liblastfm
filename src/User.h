@@ -29,6 +29,7 @@ namespace lastfm
 {
     class UserList;
     class XmlQuery;
+    class Artist;
 
     class LASTFM_DLLEXPORT Gender
     {
@@ -103,6 +104,7 @@ namespace lastfm
         QUrl imageUrl( ImageSize size = LargeImage, bool square = false ) const;
         void setImages( const QList<QUrl>& images );
 
+        unsigned short age() const;
         void setAge( unsigned short age );
 
         void setGender( const QString& s );
@@ -114,6 +116,7 @@ namespace lastfm
         /** use User::list() on the response to get a UserList */
         QNetworkReply* getFriends(  bool recentTracks = false, int limit = 50, int page = 1 ) const;
         QNetworkReply* getFriendsListeningNow( int limit = 50, int page = 1 ) const;
+        QNetworkReply* getFriendsThatListenTo( const lastfm::Artist& artist, int limit = 50, int page = 1 ) const;
         QNetworkReply* getNeighbours( int limit = 50, int page = 1 ) const;
     
         QNetworkReply* getLovedTracks( int limit = 50, int page = 1 ) const;
