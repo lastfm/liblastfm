@@ -32,6 +32,8 @@
 #include <QStringList>
 #include <fstream>
 
+#include "User.h"
+
 using lastfm::Track;
 
 static const uint k_bufferSize = 1024 * 8;
@@ -87,8 +89,8 @@ lastfm::Fingerprint::data() const
 }
 
 
-void
-lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
+lastfm::Fingerprint::Error
+lastfm::Fingerprint::generate( FingerprintableSource* ms )
 {
     //TODO throw if we can't get required metadata from the track object
     
@@ -98,7 +100,7 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
     int sampleRate, bitrate, numChannels;
 
     if ( !ms )
-        throw ReadError;
+        return ReadError;
 
     try
     {
@@ -108,12 +110,12 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
     catch (std::exception& e)
     {
         qWarning() << e.what();
-        throw HeadersError;
+        return HeadersError;
     }
     
 
     if (d->m_duration < k_minTrackDuration)
-        throw TrackTooShortError;
+        return TrackTooShortError;
     
     ms->skipSilence();
     
@@ -142,7 +144,7 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
     catch (std::exception& e)
     {
         qWarning() << e.what();
-        throw DecodeError;
+        return DecodeError;
     }
     
     const size_t PCMBufSize = 131072; 
@@ -163,24 +165,26 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
             qWarning() << e.what();
             delete ms;
             delete[] pPCMBuffer;
-            throw InternalError;
+            return InternalError;
         }
     }
     
     delete[] pPCMBuffer;
     
     if (!fpDone)
-        throw InternalError;
+        return InternalError;
     
     // We succeeded
     std::pair<const char*, size_t> fpData = extractor->getFingerprint();
     
     if (fpData.first == NULL || fpData.second == 0)
-        throw InternalError;
+        return InternalError;
     
     // Make a deep copy before extractor gets deleted
     d->m_data = QByteArray( fpData.first, fpData.second );
     delete extractor;
+
+    return NoError;
 }
 
 
@@ -255,7 +259,8 @@ lastfm::Fingerprint::submit() const
     QFileInfo const fi( path );
 
     #define e( x ) QUrl::toPercentEncoding( x )
-    QUrl url( "http://www.last.fm/fingerprint/query/" );
+    QUrl url( "http://ws.audioscrobbler.com/fingerprint/query/" );
+    url.addEncodedQueryItem( "username", e(lastfm::User().name()) );
     url.addEncodedQueryItem( "artist", e(t.artist()) );
     url.addEncodedQueryItem( "album", e(t.album()) );
     url.addEncodedQueryItem( "track", e(t.title()) );
@@ -292,8 +297,8 @@ lastfm::Fingerprint::submit() const
 }
 
 
-void
-lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_requested ) throw( Error )
+lastfm::Fingerprint::Error
+lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_requested )
 {
     // The response data will consist of a number and a string.
     // The number is the fpid and the string is either FOUND or NEW
@@ -302,6 +307,8 @@ lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_re
     //
     // In the case of an error, there will be no initial number, just
     // an error string.
+
+    Error error = NoError;
     
     QString const response( reply->readAll() );
     QStringList const list = response.split( ' ' );
@@ -310,29 +317,31 @@ lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_re
     QString const status = list.value( 1 );
        
     if (response.isEmpty() || list.count() < 2 || response == "No response to client error")
-        goto bad_response;
-    if (list.count() != 2)
-        qWarning() << "Response looks bad but continuing anyway:" << response;
-
+        error = BadResponseError;
+    else 
     {
-        // so variables go out of scope before jump to label
-        // otherwise compiler error on GCC 4.2
+        if (list.count() != 2)
+            qWarning() << "Response looks bad but continuing anyway:" << response;
+
         bool b;
         uint fpid_as_uint = fpid.toUInt( &b );
-        if (!b) goto bad_response;
-    
-        Collection::instance().setFingerprintId( d->m_track.url().toLocalFile(), fpid );
-    
-        if (complete_fingerprint_requested)
-            *complete_fingerprint_requested = (status == "NEW");
+        if ( !b )
+            error = BadResponseError;
+        else
+        {
+            Collection::instance().setFingerprintId( d->m_track.url().toLocalFile(), fpid );
 
-        d->m_id = (int)fpid_as_uint;
-        return;
+            if (complete_fingerprint_requested)
+                *complete_fingerprint_requested = (status == "NEW");
+
+            d->m_id = (int)fpid_as_uint;
+        }
     }
 
-bad_response:
-    qWarning() << "Response is bad:" << response;
-    throw BadResponseError;
+    if ( error != NoError )
+        qWarning() << "Response is bad:  " << response;
+
+    return error;
 }
 
 
@@ -352,6 +361,7 @@ QDebug operator<<( QDebug d, lastfm::Fingerprint::Error e )
     #define CASE(x) case lastfm::Fingerprint::x: return d << #x;
     switch (e)
     {
+        CASE(NoError)
         CASE(ReadError)
         CASE(HeadersError)
         CASE(DecodeError)

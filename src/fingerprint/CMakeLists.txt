@@ -34,7 +34,7 @@ target_link_libraries(lastfm_fingerprint
 )
 
 set_target_properties(lastfm_fingerprint PROPERTIES
-    COMPILE_DEFINITIONS "LASTFM_FINGERPRINT_LIB"
+    COMPILE_DEFINITIONS LASTFM_FINGERPRINT_LIB
     VERSION ${LASTFM_VERSION}
     SOVERSION ${LASTFM_SOVERSION}
 )

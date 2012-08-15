@@ -8,7 +8,7 @@ set(LASTFM_VERSION 1.0.1)
 set(LASTFM_SOVERSION 1)
 
 # options
-option(BUILD_FINGERPRINT "Build the lastfm-fingerprint library" OFF)
+option(BUILD_FINGERPRINT "Build the lastfm-fingerprint library" ON)
 option(BUILD_DEMOS "Build the lastfm example programs" OFF)
 option(BUILD_TESTS "Build liblastfm tests" ON)
 

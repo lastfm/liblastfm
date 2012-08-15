@@ -17,10 +17,13 @@
    You should have received a copy of the GNU General Public License
    along with liblastfm.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "FingerprintId.h"
-#include "ws.h"
+
 #include <QtNetwork>
 #include <QtXml>
+
+#include "FingerprintId.h"
+#include "ws.h"
+#include "XmlQuery.h"
  
 
 class lastfm::FingerprintIdPrivate
@@ -66,31 +69,33 @@ lastfm::FingerprintId::isNull() const
 QNetworkReply*
 lastfm::FingerprintId::getSuggestions() const
 {
-    if (isNull()) return 0;
-    
-    QUrl const url( "http://ws.audioscrobbler.com/fingerprint/" + QString(*this) + ".xml" );
-    QNetworkRequest const request( url );
-    return lastfm::nam()->get( request );
+    QMap<QString, QString> map;
+    map["method"] = "track.getFingerprintMetadata";
+    map["fingerprintid"] = QString::number( d->id );
+    return ws::get( map );
 }
 
 
 QMap<float, lastfm::Track> //static
 lastfm::FingerprintId::getSuggestions( QNetworkReply* reply )
 {
-    QDomDocument xml;
-    xml.setContent( reply->readAll() );
-    QDomNodeList nodes = xml.documentElement().elementsByTagName( "track" );
-    
     QMap<float, Track> tracks;
-    for (int x = 0; x < nodes.count(); ++x)
-    {
-        QDomElement const e = nodes.at(x).toElement();
+    lastfm::XmlQuery lfm;
 
-        MutableTrack t;
-        t.setTitle( e.firstChildElement( "title" ).text() );
-        t.setArtist( e.firstChildElement( "artist" ).text() );
-        tracks.insert( e.attribute( "confidence", "0.0" ).toFloat(), t );
+    if ( lfm.parse( reply->readAll() ) )
+    {
+        foreach ( const lastfm::XmlQuery& track, lfm["tracks"].children("track") )
+        {
+            MutableTrack t;
+            t.setTitle( track["name"].text() );
+            t.setArtist( track["artist"]["name"].text() );
+            t.setDuration( track["duration"].text().toInt() );
+            t.setUrl( track["url"].text() );
+            t.setMbid( lastfm::Mbid( track["mbid"].text() ) );
+            tracks.insert( track.attribute("rank").toFloat(), t );
+        }
     }
+
     return tracks;
 }
 

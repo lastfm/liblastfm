@@ -54,7 +54,7 @@ int to_synch_safe(char bytes[]) {
    return ((int)bytes[0] << 21) + ((int)bytes[1] << 14) + ((int)bytes[2] << 7) + (int)bytes[3];
 }
 
-int to_integer(char bytes[]) {
+int to_integer(char (&bytes)[4]) {
    size_t size = 0;
    uint i;
    for (i=0; i < sizeof(bytes); i++) {

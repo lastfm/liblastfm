@@ -20,6 +20,8 @@
 #ifndef LASTFM_FINGERPRINT_H
 #define LASTFM_FINGERPRINT_H
 
+#include "global.h"
+
 #include "FingerprintId.h"
 
 namespace lastfm
@@ -49,7 +51,9 @@ namespace lastfm
 
         enum Error
         {
-            ReadError = 0,
+            NoError = 0,
+
+            ReadError,
 
             /** failed to extract samplerate, bitrate, channels, duration etc */
             HeadersError,
@@ -69,23 +73,24 @@ namespace lastfm
         };
 
         /** This is CPU intensive, do it in a thread in your GUI application */
-        void generate( FingerprintableSource* ) throw( Error );
+        Error generate( FingerprintableSource* );
 
         /** Submits the fingerprint data to Last.fm in order to get a FingerprintId
           * back. You need to wait for the QNetworkReply to finish before you can
           * pass it to decode clearly. */
         QNetworkReply* submit() const;
 
-        /** Pass a finished reply from submit(), if the response is sound, id()
-          * will be valid. Otherwise we will throw. You always get a valid id
-          * or a throw.
+        /** Pass a finished reply from submit(), if the response is sound, we will
+          * return true and id() will be valid. Otherwise we will return false and
+          * id() will be null or a throw.
           */
-        void decode( QNetworkReply*, bool* lastfm_needs_a_complete_fingerprint = 0 ) throw( Error );
+        Error decode( QNetworkReply*, bool* lastfm_needs_a_complete_fingerprint = 0 );
     };
 
 
     class LASTFM_FINGERPRINT_DLLEXPORT CompleteFingerprint : public Fingerprint
     {
+    public:
         CompleteFingerprint( const lastfm::Track& t );
         ~CompleteFingerprint();
     };
