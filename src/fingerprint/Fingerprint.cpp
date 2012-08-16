@@ -89,8 +89,8 @@ lastfm::Fingerprint::data() const
 }
 
 
-lastfm::Fingerprint::Error
-lastfm::Fingerprint::generate( FingerprintableSource* ms )
+void
+lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
 {
     //TODO throw if we can't get required metadata from the track object
     
@@ -100,7 +100,7 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms )
     int sampleRate, bitrate, numChannels;
 
     if ( !ms )
-        return ReadError;
+        throw ReadError;
 
     try
     {
@@ -110,12 +110,12 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms )
     catch (std::exception& e)
     {
         qWarning() << e.what();
-        return HeadersError;
+        throw HeadersError;
     }
     
 
     if (d->m_duration < k_minTrackDuration)
-        return TrackTooShortError;
+        throw TrackTooShortError;
     
     ms->skipSilence();
     
@@ -144,7 +144,7 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms )
     catch (std::exception& e)
     {
         qWarning() << e.what();
-        return DecodeError;
+        throw DecodeError;
     }
     
     const size_t PCMBufSize = 131072; 
@@ -165,26 +165,24 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms )
             qWarning() << e.what();
             delete ms;
             delete[] pPCMBuffer;
-            return InternalError;
+            throw InternalError;
         }
     }
     
     delete[] pPCMBuffer;
     
     if (!fpDone)
-        return InternalError;
+        throw InternalError;
     
     // We succeeded
     std::pair<const char*, size_t> fpData = extractor->getFingerprint();
     
     if (fpData.first == NULL || fpData.second == 0)
-        return InternalError;
+        throw InternalError;
     
     // Make a deep copy before extractor gets deleted
     d->m_data = QByteArray( fpData.first, fpData.second );
     delete extractor;
-
-    return NoError;
 }
 
 
@@ -297,8 +295,8 @@ lastfm::Fingerprint::submit() const
 }
 
 
-lastfm::Fingerprint::Error
-lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_requested )
+void
+lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_requested ) throw( Error )
 {
     // The response data will consist of a number and a string.
     // The number is the fpid and the string is either FOUND or NEW
@@ -307,8 +305,6 @@ lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_re
     //
     // In the case of an error, there will be no initial number, just
     // an error string.
-
-    Error error = NoError;
     
     QString const response( reply->readAll() );
     QStringList const list = response.split( ' ' );
@@ -317,31 +313,29 @@ lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_re
     QString const status = list.value( 1 );
        
     if (response.isEmpty() || list.count() < 2 || response == "No response to client error")
-        error = BadResponseError;
-    else 
-    {
-        if (list.count() != 2)
-            qWarning() << "Response looks bad but continuing anyway:" << response;
+        goto bad_response;
+    if (list.count() != 2)
+        qWarning() << "Response looks bad but continuing anyway:" << response;
 
+    {
+        // so variables go out of scope before jump to label
+        // otherwise compiler error on GCC 4.2
         bool b;
         uint fpid_as_uint = fpid.toUInt( &b );
-        if ( !b )
-            error = BadResponseError;
-        else
-        {
-            Collection::instance().setFingerprintId( d->m_track.url().toLocalFile(), fpid );
+        if (!b) goto bad_response;
+    
+        Collection::instance().setFingerprintId( d->m_track.url().toLocalFile(), fpid );
+    
+        if (complete_fingerprint_requested)
+            *complete_fingerprint_requested = (status == "NEW");
 
-            if (complete_fingerprint_requested)
-                *complete_fingerprint_requested = (status == "NEW");
-
-            d->m_id = (int)fpid_as_uint;
-        }
+        d->m_id = (int)fpid_as_uint;
+        return;
     }
 
-    if ( error != NoError )
-        qWarning() << "Response is bad:  " << response;
-
-    return error;
+bad_response:
+    qWarning() << "Response is bad:" << response;
+    throw BadResponseError;
 }
 
 
@@ -361,7 +355,6 @@ QDebug operator<<( QDebug d, lastfm::Fingerprint::Error e )
     #define CASE(x) case lastfm::Fingerprint::x: return d << #x;
     switch (e)
     {
-        CASE(NoError)
         CASE(ReadError)
         CASE(HeadersError)
         CASE(DecodeError)
