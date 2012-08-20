@@ -768,6 +768,7 @@ lastfm::Track::updateNowPlaying( int duration ) const
 {
     QMap<QString, QString> map = params("updateNowPlaying");
     map["duration"] = QString::number( duration );
+    map["albumArtist"] = d->albumArtist;
     if ( !album().isNull() ) map["album"] = album();
     map["context"] = extra("playerId");
 
