@@ -363,4 +363,6 @@ QDebug operator<<( QDebug d, lastfm::Fingerprint::Error e )
         CASE(InternalError)
     }
     #undef CASE
+
+    return d;
 }
