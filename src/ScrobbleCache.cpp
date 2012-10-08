@@ -132,7 +132,7 @@ ScrobbleCache::add( const QList<lastfm::Track>& tracks )
     {
         Invalidity invalidity;
         
-        if ( isValid( track, &invalidity ) )
+        if ( !isValid( track, &invalidity ) )
         {
             qWarning() << invalidity;
         }
