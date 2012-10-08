@@ -102,6 +102,12 @@ lastfm::Audioscrobbler::cacheBatch( const QList<lastfm::Track>& tracks, const QS
     submit();
 }
 
+void
+lastfm::Audioscrobbler::cacheBatch( const QList<lastfm::Track>& tracks )
+{
+    cacheBatch( tracks, "" ); 
+}
+
 
 void
 lastfm::Audioscrobbler::submit()
