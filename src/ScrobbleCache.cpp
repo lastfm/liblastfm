@@ -139,7 +139,14 @@ ScrobbleCache::add( const QList<lastfm::Track>& tracks )
         else if (track.isNull()) 
             qDebug() << "Will not cache an empty track";
         else 
-            d->m_tracks += track;
+        {
+            bool ok;
+            int plays = track.extra( "playCount" ).toInt( &ok );
+            if ( !ok ) plays = 1;
+
+            for ( int i = 0 ; i < plays ; ++i )
+                d->m_tracks += track;
+        }
     }
 
     d->write();
