@@ -93,12 +93,7 @@ void
 lastfm::Audioscrobbler::cacheBatch( const QList<lastfm::Track>& tracks, const QString& )
 {
     d->m_cache.add( tracks );
-
-    foreach ( const Track& track, d->m_cache.tracks() )
-        MutableTrack( track ).setScrobbleStatus( Track::Cached );
-
     emit scrobblesCached( tracks );
-
     submit();
 }
 
