@@ -31,61 +31,15 @@ using lastfm::ScrobbleCache;
 
 class lastfm::ScrobbleCachePrivate
 {
-    public:
-    enum Invalidity
-    {
-        TooShort,
-        ArtistNameMissing,
-        TrackNameMissing,
-        ArtistInvalid,
-        NoTimestamp,
-        FromTheFuture,
-        FromTheDistantPast
-    };
-
+public:
     QString m_username;
     QString m_path;
     QList<Track> m_tracks;
 
-    bool isValid( const Track& track, Invalidity* = 0 );
     void write(); /// writes m_tracks to m_path
     void read( QDomDocument& xml );  /// reads from m_path into m_tracks   
     
 };
-
-
-bool
-lastfm::ScrobbleCachePrivate::isValid( const lastfm::Track& track, Invalidity* v )
-{
-    #define TEST( test, x ) \
-        if (test) { \
-            if (v) *v = x; \
-            return false; \
-        }
-
-    TEST( track.duration() < ScrobblePoint::scrobbleTimeMin(), TooShort );
-
-    TEST( !track.timestamp().isValid(), NoTimestamp );
-
-    // actual spam prevention is something like 12 hours, but we are only
-    // trying to weed out obviously bad data, server side criteria for
-    // "the future" may change, so we should let the server decide, not us
-    TEST( track.timestamp() > QDateTime::currentDateTime().addMonths( 1 ), FromTheFuture );
-
-    TEST( track.timestamp() < QDateTime::fromString( "2003-01-01", Qt::ISODate ), FromTheDistantPast );
-
-    // Check if any required fields are empty
-    TEST( track.artist().isNull(), ArtistNameMissing );
-    TEST( track.title().isEmpty(), TrackNameMissing );
-
-    TEST( (QStringList() << "unknown artist"
-                         << "unknown"
-                         << "[unknown]"
-                         << "[unknown artist]").contains( track.artist().name().toLower() ),
-           ArtistInvalid );
-
-    return true;
-}
 
 
 ScrobbleCache::ScrobbleCache( const QString& username )
@@ -176,9 +130,9 @@ ScrobbleCache::add( const QList<lastfm::Track>& tracks )
 {
     foreach (const Track& track, tracks)
     {
-        ScrobbleCachePrivate::Invalidity invalidity;
+        Invalidity invalidity;
         
-        if ( !d->isValid( track, &invalidity ) )
+        if ( isValid( track, &invalidity ) )
         {
             qWarning() << invalidity;
         }
@@ -208,6 +162,40 @@ ScrobbleCache::remove( const QList<lastfm::Track>& toremove )
     // yes we return # remaining, rather # removed, but this is an internal 
     // function and the behaviour is documented so it's alright imo --mxcl
     return d->m_tracks.count();
+}
+
+
+bool
+ScrobbleCache::isValid( const lastfm::Track& track, Invalidity* v )
+{
+    #define TEST( test, x ) \
+        if (test) { \
+            if (v) *v = x; \
+            return false; \
+        }
+
+    TEST( track.duration() < ScrobblePoint::scrobbleTimeMin(), ScrobbleCache::TooShort );
+
+    TEST( !track.timestamp().isValid(), ScrobbleCache::NoTimestamp );
+
+    // actual spam prevention is something like 12 hours, but we are only
+    // trying to weed out obviously bad data, server side criteria for
+    // "the future" may change, so we should let the server decide, not us
+    TEST( track.timestamp() > QDateTime::currentDateTime().addMonths( 1 ), ScrobbleCache::FromTheFuture );
+
+    TEST( track.timestamp().daysTo( QDateTime::currentDateTime() ) > 14, ScrobbleCache::FromTheDistantPast );
+
+    // Check if any required fields are empty
+    TEST( track.artist().isNull(), ScrobbleCache::ArtistNameMissing );
+    TEST( track.title().isEmpty(), ScrobbleCache::TrackNameMissing );
+
+    TEST( (QStringList() << "unknown artist"
+                         << "unknown"
+                         << "[unknown]"
+                         << "[unknown artist]").contains( track.artist().name().toLower() ),
+           ScrobbleCache::ArtistInvalid );
+
+    return true;
 }
 
 

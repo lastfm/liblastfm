@@ -29,6 +29,17 @@ namespace lastfm {
 class LASTFM_DLLEXPORT ScrobbleCache
 {
 public:
+    enum Invalidity
+    {
+        TooShort,
+        ArtistNameMissing,
+        TrackNameMissing,
+        ArtistInvalid,
+        NoTimestamp,
+        FromTheFuture,
+        FromTheDistantPast
+    };
+
     explicit ScrobbleCache( const QString& username );
     ScrobbleCache( const ScrobbleCache& that );
     ~ScrobbleCache();
@@ -39,6 +50,8 @@ public:
 
     /** returns the number of tracks left in the queue */
     int remove( const QList<Track>& );
+
+    static bool isValid( const lastfm::Track& track, Invalidity* v = 0 );
 
     ScrobbleCache& operator=( const ScrobbleCache& that );
 
