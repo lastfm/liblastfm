@@ -752,7 +752,7 @@ lastfm::Track::removeTag( const QString& tag ) const
     if (tag.isEmpty())
         return 0;
     QMap<QString, QString> map = params( "removeTag" );
-    map["tags"] = tag;
+    map["tag"] = tag;
     return ws::post(map);
 }
 
