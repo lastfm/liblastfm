@@ -123,6 +123,13 @@ XmlQuery::parse( const QByteArray& bytes )
     return d->error.enumValue() == lastfm::ws::NoError;
 }
 
+bool
+XmlQuery::parse( QNetworkReply* reply )
+{
+    reply->deleteLater();
+    return parse( reply->readAll() ); 
+}
+
 
 lastfm::ws::ParseError XmlQuery::parseError() const
 {

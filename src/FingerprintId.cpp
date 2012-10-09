@@ -82,7 +82,7 @@ lastfm::FingerprintId::getSuggestions( QNetworkReply* reply )
     QMap<float, Track> tracks;
     lastfm::XmlQuery lfm;
 
-    if ( lfm.parse( reply->readAll() ) )
+    if ( lfm.parse( reply ) )
     {
         foreach ( const lastfm::XmlQuery& track, lfm["tracks"].children("track") )
         {

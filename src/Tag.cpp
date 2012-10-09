@@ -120,7 +120,7 @@ Tag::list( QNetworkReply* r )
 
     XmlQuery lfm;
 
-    if ( lfm.parse( r->readAll() ) )
+    if ( lfm.parse( r ) )
     {
 
         foreach ( XmlQuery xq, lfm.children("tag") )

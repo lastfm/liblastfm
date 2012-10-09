@@ -308,7 +308,7 @@ lastfm::RadioStation::list( QNetworkReply* r )
     QList<lastfm::RadioStation> result;
     XmlQuery lfm;
 
-    if ( lfm.parse( r->readAll() ) )
+    if ( lfm.parse( r ) )
     {
 
         foreach (XmlQuery xq, lfm.children("station"))

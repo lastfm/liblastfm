@@ -306,6 +306,7 @@ lastfm::Fingerprint::decode( QNetworkReply* reply, bool* complete_fingerprint_re
     // In the case of an error, there will be no initial number, just
     // an error string.
     
+    reply->deleteLater();
     QString const response( reply->readAll() );
     QStringList const list = response.split( ' ' );
 

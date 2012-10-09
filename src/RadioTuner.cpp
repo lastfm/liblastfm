@@ -185,7 +185,7 @@ RadioTuner::onTuneReturn()
 
     XmlQuery lfm;
 
-    if ( lfm.parse( qobject_cast<QNetworkReply*>(sender())->readAll() ) )
+    if ( lfm.parse( qobject_cast<QNetworkReply*>(sender()) ) )
     {
         qDebug() << lfm;
 
@@ -216,7 +216,7 @@ RadioTuner::onGetPlaylistReturn()
 
     XmlQuery lfm;
 
-    if ( lfm.parse( qobject_cast<QNetworkReply*>(sender())->readAll() ) )
+    if ( lfm.parse( qobject_cast<QNetworkReply*>(sender()) ) )
     {
         qDebug() << lfm;
 
