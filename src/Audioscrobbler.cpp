@@ -158,7 +158,7 @@ lastfm::Audioscrobbler::onNowPlayingReturn()
 {
     lastfm::XmlQuery lfm;
 
-    if ( lfm.parse( static_cast<QNetworkReply*>(sender())->readAll() ) )
+    if ( lfm.parse( d->m_nowPlayingReply->readAll() ) )
     {
         qDebug() << lfm;
 
@@ -166,9 +166,6 @@ lastfm::Audioscrobbler::onNowPlayingReturn()
             d->parseTrack( lfm["nowplaying"], d->m_nowPlayingTrack );
         else
             emit nowPlayingError( lfm["error"].attribute("code").toInt(), lfm["error"].text() );
-
-        d->m_nowPlayingTrack = Track();
-        d->m_nowPlayingReply = 0;
     }
     else
     {
@@ -176,6 +173,7 @@ lastfm::Audioscrobbler::onNowPlayingReturn()
     }
 
     d->m_nowPlayingTrack = Track();
+    d->m_nowPlayingReply->deleteLater();
     d->m_nowPlayingReply = 0;
 }
 
@@ -229,6 +227,7 @@ lastfm::Audioscrobbler::onTrackScrobbleReturn()
             }
         }
 
+        d->m_scrobbleReply->deleteLater();
         d->m_scrobbleReply = 0;
 
         // check is there are anymore scrobbles to submit
@@ -237,6 +236,7 @@ lastfm::Audioscrobbler::onTrackScrobbleReturn()
     else
     {
         qDebug() << lfm.parseError().message() << lfm.parseError().enumValue();
+        d->m_scrobbleReply->deleteLater();
         d->m_scrobbleReply = 0;
     }
 }
