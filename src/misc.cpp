@@ -195,6 +195,7 @@ lastfm::platform()
         case QSysInfo::MV_10_5:       return "Mac OS X 10.5";
         case QSysInfo::MV_10_6:       return "Mac OS X 10.6";
         case QSysInfo::MV_10_7:       return "Mac OS X 10.7";
+        case QSysInfo::MV_10_8:       return "Mac OS X 10.8";
 
         default:                      return "Unknown";
     }
