@@ -270,7 +270,7 @@ lastfm::TrackData::onLoveFinished()
 {
     XmlQuery lfm;
 
-    if ( lfm.parse( static_cast<QNetworkReply*>(sender())->readAll() ) )
+    if ( lfm.parse( static_cast<QNetworkReply*>(sender()) ) )
     {
         if ( lfm.attribute( "status" ) == "ok")
             loved = Track::Loved;
@@ -286,7 +286,7 @@ lastfm::TrackData::onUnloveFinished()
 {
     XmlQuery lfm;
 
-    if ( lfm.parse( static_cast<QNetworkReply*>(sender())->readAll() ) )
+    if ( lfm.parse( static_cast<QNetworkReply*>(sender()) ) )
     {
         if ( lfm.attribute( "status" ) == "ok")
             loved = Track::Unloved;
@@ -308,8 +308,10 @@ lastfm::TrackData::onGotInfo()
             break;
         }
     }
-
-    const QByteArray data = static_cast<QNetworkReply*>(sender())->readAll();
+    
+    QNetworkReply* reply = static_cast<QNetworkReply*>(sender());
+    reply->deleteLater();
+    const QByteArray data = reply->readAll();
 
     lastfm::XmlQuery lfm;
 
@@ -655,10 +657,9 @@ lastfm::Track::getSimilar( QNetworkReply* r )
     QMap<int, QPair< QString, QString > > tracks;
     try
     {
-        QByteArray b = r->readAll();
         XmlQuery lfm;
         
-        if ( lfm.parse( b ) )
+        if ( lfm.parse( r ) )
         {
             foreach (XmlQuery e, lfm.children( "track" ))
             {
@@ -752,7 +753,7 @@ lastfm::Track::removeTag( const QString& tag ) const
     if (tag.isEmpty())
         return 0;
     QMap<QString, QString> map = params( "removeTag" );
-    map["tags"] = tag;
+    map["tag"] = tag;
     return ws::post(map);
 }
 

@@ -1,10 +1,15 @@
+Join us for chats on IRC!
+
+Server: irc.last.fm
+Channel: #last.desktop
+
 # liblastfm
 
 liblastfm is a collection of libraries to help you integrate Last.fm services
 into your rich desktop software. It is officially supported software developed
 by Last.fm staff.
 
-Michael Coffey  http://twitter.com/eartle
+Michael Coffey http://twitter.com/eartle
 
 Fork it: http://github.com/lastfm/liblastfm
 

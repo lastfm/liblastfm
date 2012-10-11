@@ -501,7 +501,7 @@ User::list( QNetworkReply* r )
 
     XmlQuery lfm;
 
-    lfm.parse( r->readAll() );
+    lfm.parse( r );
     return UserList( lfm );
 }
 

@@ -186,7 +186,7 @@ Artist::getSimilar( QNetworkReply* r )
 
     XmlQuery lfm;
 
-    if ( lfm.parse( r->readAll() ) )
+    if ( lfm.parse( r ) )
     {
         foreach (XmlQuery e, lfm.children( "artist" ))
         {
@@ -210,7 +210,7 @@ Artist::getTopTracks( QNetworkReply* r )
     try
     {
         XmlQuery lfm;
-        lfm.parse( r->readAll() );
+        lfm.parse( r );
         foreach (XmlQuery e, lfm.children( "track" ))
         {
             tracks << e["name"].text();
@@ -230,7 +230,7 @@ Artist::list( QNetworkReply* r )
     QList<Artist> artists;
     XmlQuery lfm;
 
-    if ( lfm.parse( r->readAll() ) )
+    if ( lfm.parse( r ) )
     {
         foreach (XmlQuery xq, lfm.children( "artist" ))
         {
@@ -251,7 +251,7 @@ Artist::getInfo( QNetworkReply* r )
 {
     XmlQuery lfm;
 
-    if ( lfm.parse( r->readAll() ) )
+    if ( lfm.parse( r ) )
     {
         Artist artist = Artist( lfm["artist"] );
         return artist;

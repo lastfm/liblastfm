@@ -44,6 +44,7 @@ namespace lastfm
         XmlQuery( const XmlQuery& that );
         ~XmlQuery();
         bool parse( const QByteArray& data );
+        bool parse( QNetworkReply* reply );
         ws::ParseError parseError() const;
         
         XmlQuery( const QDomElement& e, const char* name = "" );
