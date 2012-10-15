@@ -4,7 +4,7 @@ project(liblastfm)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # general settings
-set(LASTFM_VERSION 1.0.2)
+set(LASTFM_VERSION 1.0.3)
 set(LASTFM_SOVERSION 1)
 
 # options
