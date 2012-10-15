@@ -131,7 +131,8 @@ XmlQuery::parse( QNetworkReply* reply )
 }
 
 
-lastfm::ws::ParseError XmlQuery::parseError() const
+lastfm::ws::ParseError
+XmlQuery::parseError() const
 {
     return d->error;
 }

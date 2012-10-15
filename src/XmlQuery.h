@@ -43,10 +43,27 @@ namespace lastfm
         XmlQuery();
         XmlQuery( const XmlQuery& that );
         ~XmlQuery();
+
+        /**
+         * Fills in the XmlQuery response by parsing raw reply @param data from the
+         * webservice.
+         *
+         * @return true if successfully parsed and the response does not signify an error,
+         * false otherwise. When false is returned, parseError() contains the error.
+         */
         bool parse( const QByteArray& data );
+
+        /**
+         * Convenience parse() overload that takes data from the @param reply and calls
+         * deleteLater() on it.
+         *
+         * @return true if successfully parsed and the response does not signify an error,
+         * false otherwise. When false is returned, parseError() contains the error.
+         */
         bool parse( QNetworkReply* reply );
+
         ws::ParseError parseError() const;
-        
+
         XmlQuery( const QDomElement& e, const char* name = "" );
 
         /** Selects a DIRECT child element, you can specify attributes like so:
@@ -56,7 +73,7 @@ namespace lastfm
         XmlQuery operator[]( const QString& name ) const;
         QString text() const;
         QString attribute( const QString& name ) const;
-        
+
         /** selects all children with specified name, recursively */
         QList<XmlQuery> children( const QString& named ) const;
 
