@@ -23,7 +23,7 @@
 #define LNETWORK_CONNECTION_MONITOR_H
 
 #include "../NetworkConnectionMonitor.h"
-#include "../global.h"
+#include "global.h"
 
 class QDBusConnection;
 class QDBusInterface;

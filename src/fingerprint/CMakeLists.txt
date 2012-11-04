@@ -8,6 +8,7 @@ include_directories(${LIBFFTW3_INCLUDE_DIR})
 include_directories(${LIBSAMPLERATE_INCLUDE_DIR})
 include_directories(${QT_INCLUDES})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/..)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/..)
 
 set(lastfm_fingerprint_SOURCES
   Collection.cpp
@@ -35,7 +36,7 @@ target_link_libraries(lastfm_fingerprint
 
 set_target_properties(lastfm_fingerprint PROPERTIES
     COMPILE_DEFINITIONS LASTFM_FINGERPRINT_LIB
-    VERSION ${LASTFM_VERSION}
+    VERSION ${LASTFM_VERSION_STRING}
     SOVERSION ${LASTFM_SOVERSION}
 )
 
