@@ -1,5 +1,5 @@
 /*
-   Copyright 2009 Last.fm Ltd. 
+   Copyright 2009 Last.fm Ltd.
       - Primarily authored by Max Howell, Jono Cole and Doug Mansell
 
    This file is part of liblastfm.
@@ -21,11 +21,11 @@
 #ifndef LASTFM_GLOBAL_H
 #define LASTFM_GLOBAL_H
 
-#define LASTFM_VERSION 0x00010002
-#define LASTFM_VERSION_STRING "1.0.2"
-#define LASTFM_MAJOR_VERSION 1
-#define LASTFM_MINOR_VERSION 0
-#define LASTFM_PATCH_VERSION 2
+#define LASTFM_VERSION @LASTFM_VERSION@
+#define LASTFM_VERSION_STRING "@LASTFM_VERSION_STRING@"
+#define LASTFM_MAJOR_VERSION @LASTFM_MAJOR_VERSION@
+#define LASTFM_MINOR_VERSION @LASTFM_MINOR_VERSION@
+#define LASTFM_PATCH_VERSION @LASTFM_PATCH_VERSION@
 
 
 #ifndef LASTFM_LIB_STATIC
@@ -53,7 +53,7 @@ namespace lastfm
 {
     /** http://labs.trolltech.com/blogs/2008/10/09/coding-tip-pretty-printing-enum-values
       * Tips for making this take a single parameter welcome! :)
-      * 
+      *
       * eg. lastfm::qMetaEnumString<QNetworkReply>( error, "NetworkError" );
       */
     template <typename T> static inline QString qMetaEnumString( int enum_value, const char* enum_name )

@@ -4,8 +4,13 @@ project(liblastfm)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # general settings
-set(LASTFM_VERSION 1.0.3)
 set(LASTFM_SOVERSION 1)
+set(LASTFM_VERSION "0x00010003")
+
+set(LASTFM_MAJOR_VERSION "1")
+set(LASTFM_MINOR_VERSION "0")
+set(LASTFM_PATCH_VERSION "3")
+set(LASTFM_VERSION_STRING "${LASTFM_MAJOR_VERSION}.${LASTFM_MINOR_VERSION}.${LASTFM_PATCH_VERSION}")
 
 # options
 option(BUILD_FINGERPRINT "Build the lastfm-fingerprint library" ON)

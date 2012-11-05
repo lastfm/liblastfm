@@ -1,3 +1,5 @@
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/global.h.in ${CMAKE_CURRENT_BINARY_DIR}/global.h)
+
 
 add_definitions(${QT_DEFINITIONS})
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
@@ -84,7 +86,7 @@ endif()
 add_library(lastfm SHARED ${liblastfm_SOURCES})
 target_link_libraries(lastfm ${liblastfm_LIBRARIES})
 set_target_properties(lastfm PROPERTIES
-    VERSION ${LASTFM_VERSION}
+    VERSION ${LASTFM_VERSION_STRING}
     SOVERSION ${LASTFM_SOVERSION}
     COMPILE_DEFINITIONS LASTFM_LIB
 )
@@ -96,4 +98,5 @@ install(TARGETS lastfm
 )
 
 file(GLOB liblastfm_HEADERS ${CMAKE_CURRENT_LIST_DIR}/*.h)
+list(APPEND liblastfm_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/global.h)
 install(FILES ${liblastfm_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/lastfm/)
