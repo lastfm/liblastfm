@@ -38,6 +38,11 @@ lastfm::LNetworkConnectionMonitor::LNetworkConnectionMonitor( QObject* parent ) 
                                         NM_DBUS_INTERFACE,
                                         QDBusConnection::systemBus(),
                                         this );
+    if ( !m_nmInterface->isValid() )
+    {
+        qDebug() << "Unable to watch network state changes via D-Bus.";
+        return;
+    }
 
     //get current connection state
     QDBusReply<uint> reply = m_nmInterface->call( QDBus::AutoDetect, "state" );
