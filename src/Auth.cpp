@@ -35,3 +35,15 @@ lastfm::Auth::getSessionInfo()
     if (!lastfm::ws::Username.isEmpty()) map["username"] = lastfm::ws::Username;
     return nam()->get( QNetworkRequest( lastfm::ws::url( map, true ) ) );
 }
+
+QNetworkReply*
+lastfm::Auth::getMobileSession( const QString& username, const QString& password )
+{
+    QMap<QString, QString> map;
+    map["method"] = "Auth.getMobileSession";
+    map["username"] = username;
+    map["password"] = password;
+
+    return 0;
+    //return nam()->post( QNetworkRequest( lastfm::ws::url( map, true ) ) );
+}

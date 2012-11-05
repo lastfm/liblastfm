@@ -40,7 +40,6 @@ lastfm::Xspf::Xspf( const QDomElement& playlist_node, QObject* parent )
     XmlQuery e( playlist_node );
 
     int expirySeconds = e["link rel=http://www.last.fm/expiry"].text().toInt();
-    QTimer::singleShot( expirySeconds * 1000, this, SLOT(onExpired()));
     
     d->title = e["title"].text();
         
@@ -62,6 +61,8 @@ lastfm::Xspf::Xspf( const QDomElement& playlist_node, QObject* parent )
         t.setDuration( e["duration"].text().toInt() / 1000 );
         t.setLoved( e["extension"]["loved"].text() == "1" );
         t.setSource( Track::LastFmRadio );
+        t.setExtra( "expiry", QString::number( QDateTime::currentDateTime().addSecs( expirySeconds ).toTime_t() ) );
+        t.setExtra( "playlistTitle", d->title );
 
         QList<QString> contexts;
         QDomNodeList contextsNodeList = QDomElement(e["extension"]["context"]).childNodes();
@@ -103,9 +104,8 @@ lastfm::Xspf::takeFirst()
     return d->tracks.takeFirst();
 }
 
-
-void
-lastfm::Xspf::onExpired()
+QList<lastfm::Track>
+lastfm::Xspf::tracks() const
 {
-    emit expired();
+    return d->tracks;
 }

@@ -735,6 +735,27 @@ lastfm::Track::getBuyLinks( const QString& country ) const
     return ws::get( map );
 }
 
+QNetworkReply*
+lastfm::Track::playlinks( const QList<Track>& tracks )
+{
+    QMap<QString, QString> map;
+
+    map["method"] = "Track.playlinks";
+
+    for ( int i = 0 ; i < tracks.count() ; ++i )
+    {
+        if ( tracks[i].d->mbid.size())
+            map["mbid[" + QString::number( i ) + "]"] = tracks[i].d->mbid;
+        else
+        {
+            map["artist[" + QString::number( i ) + "]"] = tracks[i].d->artist;
+            map["track[" + QString::number( i ) + "]"] = tracks[i].d->title;
+        }
+    }
+
+    return ws::get( map );
+}
+
 
 QNetworkReply*
 lastfm::Track::addTags( const QStringList& tags ) const

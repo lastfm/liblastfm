@@ -38,11 +38,7 @@ namespace lastfm
         bool isEmpty() const;
         Track takeFirst();
 
-    signals:
-        void expired();
-
-    private slots:
-        void onExpired();
+        QList<Track> tracks() const;
 
     private:
         class XspfPrivate * const d;

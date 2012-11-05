@@ -18,8 +18,7 @@
    along with liblastfm.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LASTFM_AUTH_H
-#define LASTFM_AUTH_H
+#pragma once
 
 #include "global.h"
 
@@ -34,7 +33,7 @@ namespace lastfm
 
     public:
         static QNetworkReply* getSessionInfo();
+        static QNetworkReply* getMobileSession( const QString& username, const QString& password );
     };
 }
 
-#endif // TASTEOMETER_H
