@@ -54,8 +54,11 @@ int main( int argc, char** argv )
     // scrobble point usually, not before
     as.cache( t );
     
-    //FIXME I don't get it, but the timer never triggers! pls fork and fix!
-    QTimer::singleShot( 31*1000, &as, SLOT(submit()) );
+    QTimer timer;
+    timer.setSingleShot( true );
+    timer.setInterval( 31*1000 );
+    connect( &timer, SIGNAL(timeout()), &as, SLOT(submit()) );
+    timer.start();
     
     app.connect( &as, SIGNAL(status(int)), SLOT(onStatus(int)) );
     
