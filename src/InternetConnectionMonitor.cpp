@@ -113,7 +113,7 @@ lastfm::InternetConnectionMonitor::onNetworkUp()
     qDebug() << "Internet connection is reachable :)";
 #else
     qDebug() << "Network seems to be up again. Let's try if there's internet connection!";
-    nam()->head( QNetworkRequest( QUrl( tr( "http://www.last.fm/" ) ) ) );
+    nam()->head( QNetworkRequest( QUrl( "http://www.last.fm/" ) ) );
 #endif
 }
 

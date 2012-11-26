@@ -137,7 +137,7 @@ ScrobbleCache::add( const QList<lastfm::Track>& tracks )
             qWarning() << invalidity;
             MutableTrack mt = MutableTrack( track );
             mt.setScrobbleStatus( Track::Error );
-            mt.setScrobbleErrorText( QObject::tr( "Invalid" ) );
+            mt.setScrobbleErrorText( "Invalid" );
         }
         else if (track.isNull()) 
             qDebug() << "Will not cache an empty track";

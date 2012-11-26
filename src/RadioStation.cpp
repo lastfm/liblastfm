@@ -106,12 +106,12 @@ lastfm::RadioStation::library( QList<lastfm::User>& users )
     url.append("/personal");
 
     RadioStation s( url );
-    if( users.count() == 1 ) 
-        s.setTitle( QObject::tr( "%1%2s Library Radio").arg( lastfm::ws::Username, QChar(0x2019) ));
-
-    else {
+    if( users.count() != 1 )
+    {
         QString title;
-        for( QList<lastfm::User>::const_iterator i = users.begin(); i != users.end(); i++ ) {
+
+        for( QList<lastfm::User>::const_iterator i = users.begin(); i != users.end(); i++ )
+        {
             if( i == users.end() - 1 )
                 title += " and " + *i;
             else
@@ -128,29 +128,19 @@ lastfm::RadioStation::library( QList<lastfm::User>& users )
 lastfm::RadioStation
 lastfm::RadioStation::recommendations( const lastfm::User& user )
 {
-    RadioStation s( "lastfm://user/" + user + "/recommended" );
-    
-    s.setTitle( QObject::tr( "%1%2s Recommended Radio").arg( lastfm::ws::Username, QChar(0x2019) ));
-
-    return s;
+    return RadioStation( "lastfm://user/" + user + "/recommended" );
 }
 
 lastfm::RadioStation
 lastfm::RadioStation::friends( const lastfm::User& user )
 {
-    RadioStation s( "lastfm://user/" + user + "/friends" );
-
-    s.setTitle( QObject::tr( "%1%2s Friends Radio").arg( lastfm::ws::Username, QChar(0x2019) ));
-
-    return s; 
+    return RadioStation( "lastfm://user/" + user + "/friends" );
 }
 
 lastfm::RadioStation
 lastfm::RadioStation::neighbourhood( const lastfm::User& user )
 {
-    RadioStation s( "lastfm://user/" + user + "/neighbours" );
-    s.setTitle( QObject::tr( "%1%2s Neighbourhood Radio").arg( lastfm::ws::Username ));
-    return s;
+    return RadioStation( "lastfm://user/" + user + "/neighbours" );
 }
 
 
@@ -210,9 +200,7 @@ lastfm::RadioStation::similar( QList<lastfm::Artist>& artists )
 lastfm::RadioStation
 lastfm::RadioStation::mix( const lastfm::User& user )
 {
-    RadioStation s( "lastfm://user/" + user + "/mix" );
-    s.setTitle( QObject::tr( "%1%2s Mix Radio").arg( lastfm::ws::Username, QChar(0x2019) ) );
-    return s;
+    return RadioStation( "lastfm://user/" + user + "/mix" );
 }
 
 
@@ -224,28 +212,17 @@ lastfm::RadioStation::url() const
 
 
 void
-lastfm::RadioStation::setTitle( const QString& s )
+lastfm::RadioStation::setTitle( const QString& title )
 {
     // Stop the radio station getting renamed when the web services don't know what it's called
-    if ( !d->m_title.isEmpty() && s.compare( "a radio station", Qt::CaseInsensitive ) == 0 )
+    if ( !d->m_title.isEmpty() && title.compare( "a radio station", Qt::CaseInsensitive ) == 0 )
         return;
 
-    QString title = s.trimmed();
+    // do not rename the current user's stations if they already have a name
+    if ( !d->m_title.isEmpty() && d->m_url.toString().startsWith( "lastfm://user/" + User().name() ) )
+        return;
 
-    if ( title.compare( QObject::tr("%1%2s Library Radio").arg( lastfm::ws::Username, QChar(0x2019) ), Qt::CaseInsensitive ) == 0 )
-        title = QObject::tr("My Library Radio");
-    else if ( title.compare( QObject::tr("%1%2s Mix Radio").arg( lastfm::ws::Username, QChar(0x2019) ), Qt::CaseInsensitive ) == 0  )
-        title = QObject::tr("My Mix Radio");
-    else if ( title.compare( QObject::tr("%1%2s Recommended Radio").arg( lastfm::ws::Username, QChar(0x2019) ), Qt::CaseInsensitive ) == 0  )
-        title = QObject::tr("My Recommended Radio");
-    else if ( title.compare( QObject::tr("%1%2s Friends%2 Radio").arg( lastfm::ws::Username, QChar(0x2019) ), Qt::CaseInsensitive ) == 0  )
-        title = QObject::tr("My Friends%1 Radio").arg( QChar( 0x2019 ) );
-    else if ( title.compare( QObject::tr("%1%2s Friends Radio").arg( lastfm::ws::Username, QChar(0x2019) ), Qt::CaseInsensitive ) == 0  )
-        title = QObject::tr("My Friends%1 Radio").arg( QChar( 0x2019 ) );
-    else if ( title.compare( QObject::tr("%1%2s Neighbourhood Radio").arg( lastfm::ws::Username, QChar(0x2019) ), Qt::CaseInsensitive ) == 0  )
-        title = QObject::tr("My Neighbourhood Radio");
-
-    d->m_title = title;
+    d->m_title = title.trimmed();
 }
 
 void
