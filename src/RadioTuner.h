@@ -57,8 +57,6 @@ namespace lastfm
     private slots:
         void onTuneReturn();
         void onGetPlaylistReturn();
-        void onGotLovedTracks();
-        void onGotPlaylinks();
 
     private:
         class RadioTunerPrivate * const d;

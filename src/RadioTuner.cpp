@@ -42,7 +42,6 @@ class lastfm::RadioTunerPrivate : public QObject
     Q_OBJECT
     public:
         QList<Track> m_playlist;
-        QPointer<Xspf> m_xspf;
         uint m_retry_counter;
         bool m_fetchingPlaylist;
         bool m_requestedPlaylist;
@@ -156,77 +155,11 @@ RadioTuner::RadioTuner( const RadioStation& station )
     }
     else
     {
-        if ( station.url().startsWith( "lastfm://user/" ) && station.url().endsWith( "/loved" ) )
-        {
-            // this is loved tracks so fetch them all!
-
-            int endPos = station.url().indexOf( "/", 14 );
-            if ( endPos == -1 )
-                endPos = station.url().length();
-
-            QString username = station.url().mid( 14, endPos - 14 );
-
-            connect( User( username ).getLovedTracks( 100, 1 ), SIGNAL(finished()), SLOT(onGotLovedTracks()));
-        }
-        else
-        {
-            QMap<QString, QString> map;
-            map["method"] = "radio.tune";
-            map["station"] = station.url();
-            map["additional_info"] = "1";
-            connect( ws::post(map), SIGNAL(finished()), SLOT(onTuneReturn()) );
-        }
-    }
-}
-
-void
-RadioTuner::onGotLovedTracks()
-{
-    XmlQuery lfm;
-
-    if ( lfm.parse( static_cast<QNetworkReply*>( sender() ) ) )
-    {
-        foreach( const XmlQuery& trackXml, lfm["lovedtracks"].children("track") )
-        {
-            MutableTrack track;
-            track.setTitle( trackXml["name"].text() );
-            track.setArtist( trackXml["artist"]["name"].text() );
-            //track.setMbid( Mbid( trackXml["mbid"].text() ) );
-            track.setLoved( true );
-            track.setUrl( QUrl( "http://www.spotify.com" ) );
-            track.setExtra( "streamSource", "Spotify" );
-            track.setExtra( "spotifyId", "unknown" );
-
-            d->m_playlist << track;
-        }
-
-        int page = lfm["lovedtracks"].attribute( "page" ).toInt();
-        int perPage = lfm["lovedtracks"].attribute( "perPage" ).toInt();
-        int totalPages = lfm["lovedtracks"].attribute( "totalPages" ).toInt();
-        QString user = lfm["lovedtracks"].attribute( "user" );
-        //int total = lfm["friends"].attribute( "total" ).toInt();
-
-        qDebug() << page;
-
-        // Check if we need to fetch another page of users
-        if ( page != totalPages )
-        {
-            connect( lastfm::User( user ).getLovedTracks( perPage, page + 1 ), SIGNAL(finished()), SLOT(onGotLovedTracks()) );
-        }
-        else
-        {
-            // we have fetched all the pages!
-            // SHUFFLE!
-            QList<Track> lovedTracks = d->m_playlist;
-            d->m_playlist.clear();
-
-            qsrand( QDateTime::currentDateTime().toTime_t() );
-
-            while ( lovedTracks.count() > 0 )
-                d->m_playlist << lovedTracks.takeAt( qrand() % lovedTracks.count() );
-
-            emit trackAvailable();
-        }
+        QMap<QString, QString> map;
+        map["method"] = "radio.tune";
+        map["station"] = station.url();
+        map["additional_info"] = "1";
+        connect( ws::post(map), SIGNAL(finished()), SLOT(onTuneReturn()) );
     }
 }
 
@@ -307,44 +240,17 @@ RadioTuner::onGetPlaylistReturn()
         else
         {
             d->m_retry_counter = 0;
-            // get the spotify uris for this playlist
-            d->m_xspf = xspf;
-            connect( Track::playlinks( d->m_xspf->tracks() ), SIGNAL(finished()), SLOT(onGotPlaylinks()));
+            d->m_playlist << xspf->tracks();
+            emit trackAvailable();
         }
+
+        delete xspf;
     }
     else
     {
         qDebug() << lfm.parseError().message() << lfm.parseError().enumValue();
         emit error( lfm.parseError().enumValue(), lfm.parseError().message() );
     }
-}
-
-void
-RadioTuner::onGotPlaylinks()
-{
-    lastfm::XmlQuery lfm;
-
-    // get the spotify ids from the xml
-    if ( lfm.parse( static_cast<QNetworkReply*>( sender() ) ) )
-    {
-        for ( int i = 0 ; i < d->m_xspf->tracks().count() ; i++ )
-        {
-            QString spotifyId = lfm["spotify"].children("track")[i]["externalids"]["spotify"].text();
-
-            if ( !spotifyId.isEmpty() )
-            {
-                MutableTrack( d->m_xspf->tracks()[i] ).setExtra( "spotifyId", spotifyId );
-            }
-        }
-    }
-
-    // add all the xspf tracks to the playlist
-    while ( !d->m_xspf->isEmpty() )
-        d->m_playlist << d->m_xspf->takeFirst();
-
-    d->m_xspf->deleteLater();
-
-    emit trackAvailable();
 }
 
 void
