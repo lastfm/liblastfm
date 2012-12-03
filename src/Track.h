@@ -109,7 +109,8 @@ public:
         FilteredAlbumName = 115,
         FilteredTimestamp = 116,
         ExceededMaxDailyScrobbles = 118,
-        InvalidStreamAuth = 119
+        InvalidStreamAuth = 119,
+        Invalid = 300
     };
 
     Track();
