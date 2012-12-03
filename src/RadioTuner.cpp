@@ -235,7 +235,7 @@ RadioTuner::onGetPlaylistReturn()
         {
             // give up after too many empty playlists  :(
             if (!d->tryAgain())
-                emit error( ws::NotEnoughContent, tr("Not enough content") );
+                emit error( ws::NotEnoughContent, "Not enough content" );
         }
         else
         {

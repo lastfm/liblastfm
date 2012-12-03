@@ -181,11 +181,11 @@ QString Gender::toString() const
     QString result;
 
     if (male())
-        result = QObject::tr( "Male" );
+        result = "Male";
     else if (female())
-        result = QObject::tr( "Female" );
+        result = "Female";
     else
-        result = QObject::tr( "Neuter" );
+        result = "Neuter";
 
     return result;
 }
@@ -561,10 +561,10 @@ User::getInfoString() const
 {
     QString text;
 
-    text = QObject::tr("%1").arg( d->m_realName.isEmpty() ? d->m_name : d->m_realName );
-    if ( d->m_age ) text.append( QObject::tr(", %1").arg( d->m_age ) );
-    if ( d->m_gender.known() ) text.append( QObject::tr(", %1").arg( d->m_gender.toString() ) );
-    if ( !d->m_country.isEmpty() ) text.append( QObject::tr(", %1").arg( d->m_country ) );
+    text = QString("%1").arg( d->m_realName.isEmpty() ? d->m_name : d->m_realName );
+    if ( d->m_age ) text.append( QString(", %1").arg( d->m_age ) );
+    if ( d->m_gender.known() ) text.append( QString(", %1").arg( d->m_gender.toString() ) );
+    if ( !d->m_country.isEmpty() ) text.append( QString(", %1").arg( d->m_country ) );
 
     return text;
 }

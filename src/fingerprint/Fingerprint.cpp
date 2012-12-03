@@ -144,6 +144,7 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
     catch (std::exception& e)
     {
         qWarning() << e.what();
+        delete extractor;
         throw DecodeError;
     }
     
@@ -163,8 +164,8 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
         catch ( const std::exception& e )
         {
             qWarning() << e.what();
-            delete ms;
             delete[] pPCMBuffer;
+            delete extractor;
             throw InternalError;
         }
     }
@@ -172,14 +173,20 @@ lastfm::Fingerprint::generate( FingerprintableSource* ms ) throw( Error )
     delete[] pPCMBuffer;
     
     if (!fpDone)
+    {
+        delete extractor;
         throw InternalError;
-    
+    }
+
     // We succeeded
     std::pair<const char*, size_t> fpData = extractor->getFingerprint();
     
     if (fpData.first == NULL || fpData.second == 0)
+        {
+        delete extractor;
         throw InternalError;
-    
+        }
+
     // Make a deep copy before extractor gets deleted
     d->m_data = QByteArray( fpData.first, fpData.second );
     delete extractor;
