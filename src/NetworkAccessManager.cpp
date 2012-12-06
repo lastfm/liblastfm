@@ -84,6 +84,7 @@ lastfm::NetworkAccessManager::NetworkAccessManager( QObject* parent )
                , m_pac( 0 )
                , m_monitor( 0 )
             #endif
+               , m_userProxy( QNetworkProxy( QNetworkProxy::DefaultProxy ) )
 {
     // can't be done in above init, as applicationName() won't be set
     if (lastfm::UserAgent.isEmpty())
@@ -103,11 +104,19 @@ lastfm::NetworkAccessManager::~NetworkAccessManager()
 #endif
 }
 
+void
+lastfm::NetworkAccessManager::setUserProxy( const QNetworkProxy& proxy )
+{
+    m_userProxy = proxy;
+}
 
 QNetworkProxy
 lastfm::NetworkAccessManager::proxy( const QNetworkRequest& request )
 {   
     Q_UNUSED( request );
+
+    if ( m_userProxy.type() != QNetworkProxy::DefaultProxy )
+        return m_userProxy;
 
 #if defined WIN32 && ! defined __MINGW32__
     IeSettings s;
