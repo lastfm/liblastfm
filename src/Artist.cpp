@@ -71,8 +71,8 @@ Artist::Artist( const XmlQuery& xml )
     setImageUrl( ExtraLargeImage, xml["image size=extralarge"].text() );
     setImageUrl( MegaImage, xml["image size=mega"].text() );
 
-    d->biography = xml["bio"]["content"].text();
-    d->biographySummary = xml["bio"]["summary"].text();
+    d->biography = xml["bio"]["content"].text().trimmed();
+    d->biographySummary = xml["bio"]["summary"].text().trimmed();
 }
 
 
@@ -84,13 +84,6 @@ Artist::Artist( const Artist& artist )
 
 Artist::~Artist()
 {
-}
-
-
-QString
-Artist::parseBiography( QString bio ) const
-{
-    return bio.replace( "   ", "\n" );
 }
 
 
