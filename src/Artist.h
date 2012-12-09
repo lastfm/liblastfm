@@ -33,6 +33,7 @@ namespace lastfm
     {
     private:
         QExplicitlySharedDataPointer<class ArtistData> d;
+        QString parseBiography( QString bio ) const;
 
     public:
         Artist();
@@ -46,15 +47,15 @@ namespace lastfm
         void setImageUrl( ImageSize size, const QString& url );
 
         bool isNull() const;
-        
+
         /** the url for this artist's page at www.last.fm */
         QUrl www() const;
-    
+
         Artist& operator=( const Artist& that );
         bool operator==( const Artist& that ) const;
         bool operator!=( const Artist& that ) const;
         bool operator<( const Artist& that ) const;
-    
+
         operator QString() const;
 
         QString toString() const;
@@ -62,22 +63,25 @@ namespace lastfm
         QString name() const;
         void setName( const QString& name );
 
+        QString biographySummary() const;
+        QString biography() const;
+
         QDomElement toDomElement( QDomDocument& ) const;
-    
+
         QNetworkReply* share( const QStringList& recipients, const QString& message = "", bool isPublic = true ) const;
 
         QNetworkReply* getEvents(int limit = 0) const;
         QNetworkReply* getInfo( const QString& username = "" ) const;
         static Artist getInfo( QNetworkReply* );
-    
+
         QNetworkReply* getSimilar( int limit = -1 ) const;
-        /** The match percentage is returned from last.fm as a 4 significant 
-          * figure floating point value. So we multply it by 100 to make an 
-          * integer in the range of 0 to 10,000. This is possible confusing 
-          * for you, but I felt it best not to lose any precision, and floats 
+        /** The match percentage is returned from last.fm as a 4 significant
+          * figure floating point value. So we multply it by 100 to make an
+          * integer in the range of 0 to 10,000. This is possible confusing
+          * for you, but I felt it best not to lose any precision, and floats
           * aren't much fun. */
         static QMap<int, QString> getSimilar( QNetworkReply* );
-    
+
         /** use Tag::list to get the tag list out of the finished reply */
         QNetworkReply* getTags() const;
         QNetworkReply* getTopTags() const;
@@ -87,10 +91,10 @@ namespace lastfm
 
         /** Last.fm dictates that you may submit at most 10 of these */
         QNetworkReply* addTags( const QStringList& ) const;
-    
+
         QNetworkReply* search( int limit = -1 ) const;
         static QList<Artist> list( QNetworkReply* );
-        
+
         QMap<QString, QString> params( const QString& method ) const;
     };
 }
