@@ -1,5 +1,5 @@
 /*
-   Copyright 2009 Last.fm Ltd. 
+   Copyright 2009 Last.fm Ltd.
       - Primarily authored by Max Howell, Jono Cole and Doug Mansell
 
    This file is part of liblastfm.
@@ -41,6 +41,8 @@ public:
     ~ArtistData() {}
     QString name;
     QMap<AbstractType::ImageSize, QUrl> images;
+    QString biography;
+    QString biographySummary;
 };
 
 
@@ -68,16 +70,29 @@ Artist::Artist( const XmlQuery& xml )
     setImageUrl( LargeImage, xml["image size=large"].text() );
     setImageUrl( ExtraLargeImage, xml["image size=extralarge"].text() );
     setImageUrl( MegaImage, xml["image size=mega"].text() );
+
+    d->biography = xml["bio"]["content"].text();
+    d->biographySummary = xml["bio"]["summary"].text();
 }
+
 
 Artist::Artist( const Artist& artist )
     :AbstractType(), d( artist.d )
 {
 }
 
+
 Artist::~Artist()
 {
 }
+
+
+QString
+Artist::parseBiography( QString bio ) const
+{
+    return bio.replace( "   ", "\n" );
+}
+
 
 QUrl
 Artist::imageUrl( ImageSize size, bool square ) const
@@ -89,12 +104,28 @@ Artist::imageUrl( ImageSize size, bool square ) const
     return QUrl( url.toString().replace( re, "/serve/\\1s/" ));
 }
 
+
 void
 Artist::setImageUrl( ImageSize size, const QString& url )
 {
     if ( !url.isEmpty() )
         d->images[size] = url;
 }
+
+
+QString
+Artist::biography() const
+{
+    return d->biography;
+}
+
+
+QString
+Artist::biographySummary() const
+{
+    return d->biographySummary;
+}
+
 
 QMap<QString, QString> //private
 Artist::params( const QString& method ) const
@@ -117,11 +148,12 @@ Artist::share( const QStringList& recipients, const QString& message, bool isPub
 }
 
 
-QUrl 
+QUrl
 Artist::www() const
 {
     return UrlBuilder( "music" ).slash( Artist::name() ).url();
 }
+
 
 QNetworkReply*
 Artist::getEvents(int limit) const
@@ -131,7 +163,8 @@ Artist::getEvents(int limit) const
     return ws::get( map );
 }
 
-QNetworkReply* 
+
+QNetworkReply*
 Artist::getInfo( const QString& username ) const
 {
     QMap<QString, QString> map = params("getInfo");
@@ -141,13 +174,14 @@ Artist::getInfo( const QString& username ) const
 }
 
 
-QNetworkReply* 
+QNetworkReply*
 Artist::getTags() const
 {
     return ws::get( params("getTags") );
 }
 
-QNetworkReply* 
+
+QNetworkReply*
 Artist::getTopTags() const
 {
     return ws::get( params("getTopTags") );
@@ -170,7 +204,7 @@ Artist::getSimilar( int limit ) const
 }
 
 
-QNetworkReply* 
+QNetworkReply*
 Artist::search( int limit ) const
 {
     QMap<QString, QString> map = params("search");
@@ -263,6 +297,7 @@ Artist::getInfo( QNetworkReply* r )
     }
 }
 
+
 QNetworkReply*
 Artist::addTags( const QStringList& tags ) const
 {
@@ -273,11 +308,13 @@ Artist::addTags( const QStringList& tags ) const
     return ws::post(map);
 }
 
+
 bool
 Artist::isNull() const
 {
     return d->name.isEmpty();
 }
+
 
 Artist&
 Artist::operator=( const Artist& that )
@@ -285,42 +322,51 @@ Artist::operator=( const Artist& that )
     d->name = that.name(); d->images = that.d->images; return *this;
 }
 
+
 bool
 lastfm::Artist::operator==( const Artist& that ) const
 {
     return d->name == that.d->name;
 }
 
+
 bool
 Artist::operator!=( const Artist& that ) const
 {
     return d->name != that.d->name;
 }
+
+
 bool
 Artist::operator<( const Artist& that ) const
 {
     return d->name < that.d->name;
 }
 
+
 Artist::operator QString() const
 {
     return d->name;
 }
+
 
 QString Artist::toString() const
 {
     return name();
 }
 
+
 QString Artist::name() const
 {
     return QString(*this);
 }
 
+
 void Artist::setName( const QString& name )
 {
     d->name = name;
 }
+
 
 QDomElement Artist::toDomElement( QDomDocument& ) const
 {
