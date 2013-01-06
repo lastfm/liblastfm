@@ -1,5 +1,5 @@
 /*
-   Copyright 2009 Last.fm Ltd. 
+   Copyright 2009 Last.fm Ltd.
       - Primarily authored by Max Howell, Jono Cole and Doug Mansell
 
    This file is part of liblastfm.
@@ -32,7 +32,7 @@ public:
 lastfm::UrlBuilder::UrlBuilder( const QString& base )
     : d( new UrlBuilderPrivate )
 {
-    d->path = '/' + base.toAscii();
+    d->path = '/' + base.toLatin1();
 }
 
 
@@ -62,7 +62,11 @@ lastfm::UrlBuilder::url() const
     QUrl url;
     url.setScheme( "http" );
     url.setHost( host() );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    url.setPath( d->path );
+#else
     url.setEncodedPath( d->path );
+#endif
     return url;
 }
 
@@ -86,7 +90,7 @@ lastfm::UrlBuilder::host( const QLocale& locale )
     switch (locale.language())
     {
         case QLocale::Portuguese: return "www.lastfm.com.br";
-        case QLocale::Turkish:    return "www.lastfm.com.tr";                    
+        case QLocale::Turkish:    return "www.lastfm.com.tr";
         case QLocale::French:     return "www.lastfm.fr";
         case QLocale::Italian:    return "www.lastfm.it";
         case QLocale::German:     return "www.lastfm.de";

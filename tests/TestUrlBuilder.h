@@ -1,6 +1,6 @@
 /*
-   This software is in the public domain, furnished "as is", without technical 
-   support, and with no warranty, express or implied, as to its usefulness for 
+   This software is in the public domain, furnished "as is", without technical
+   support, and with no warranty, express or implied, as to its usefulness for
    any purpose.
 */
 
@@ -19,7 +19,7 @@ static inline int getResponseCode( const QUrl& url )
 {
     QNetworkAccessManager nam;
     QNetworkReply* reply = nam.head( QNetworkRequest(url) );
-    
+
     QEventLoop loop;
     loop.connect( reply, SIGNAL(finished()), SLOT(quit()) );
     loop.exec();
@@ -41,10 +41,10 @@ private slots:
     void encode() /** @author <jono@last.fm> */
     {
         QFETCH( QString, input );
-        QFETCH( QString, output );    
-        QCOMPARE( lastfm::UrlBuilder::encode( input ), output.toAscii() );
+        QFETCH( QString, output );
+        QCOMPARE( lastfm::UrlBuilder::encode( input ), output.toLatin1() );
     }
-    
+
     void encode_data() /** @author <jono@last.fm> */
     {
         QTest::addColumn<QString>("input");
@@ -55,7 +55,7 @@ private slots:
         QTest::newRow( "ascii with symbols" ) << "some track [original version]" << "some+track+%5Boriginal+version%5D";
         QTest::newRow( "ascii with last.fm-special symbols" ) << "Survivalism [Revision #1]" << "Survivalism%2B%255BRevision%2B%25231%255D";
     }
-    
+
     void no404() /** @author <max@last.fm> */
     {
         QFETCH( QString, artist );
@@ -65,7 +65,7 @@ private slots:
 
         QCOMPARE( getResponseCode( url ), 200 );
     }
-    
+
     void no404_data() /** @author <max@last.fm> */
     {
         QTest::addColumn<QString>("artist");
