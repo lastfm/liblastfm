@@ -30,6 +30,10 @@
 #include <QThread>
 #include <QMutex>
 
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    #include <QUrlQuery>
+#endif
+
 
 static QMap< QThread*, QNetworkAccessManager* > threadNamHash;
 static QSet< QThread* > ourNamSet;
@@ -98,7 +102,14 @@ static QUrl baseUrl()
     QUrl url;
     url.setScheme( "http" );
     url.setHost( lastfm::ws::host() );
-    url.setEncodedPath( "/2.0/" );
+
+    QString path = "/2.0/";
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    url.setPath( path );
+#else
+    url.setEncodedPath( path );
+#endif
+
     return url;
 }
 
@@ -144,7 +155,11 @@ lastfm::ws::url( QMap<QString, QString> params, bool sk )
         i.next();
         QByteArray const key = QUrl::toPercentEncoding( i.key() );
         QByteArray const value = QUrl::toPercentEncoding( i.value() );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+        QUrlQuery(url).addQueryItem( key, value );
+#else
         url.addEncodedQueryItem( key, value );
+#endif
     }
 
     return url;
