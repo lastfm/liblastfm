@@ -7,6 +7,11 @@ set(liblastfm_LIBRARIES
     ${QT_QTXML_LIBRARY}
 )
 
+list(APPEND liblastfm_QT5_MODULES
+    Xml
+    Network
+)
+
 set(liblastfm_SOURCES
         ws.cpp
         NetworkConnectionMonitor.cpp
@@ -76,12 +81,13 @@ if(UNIX AND NOT APPLE)
     list(APPEND liblastfm_SOURCES
         linux/LNetworkConnectionMonitor_linux.cpp
     )
-
-    find_package(Qt4 COMPONENTS QtDbus REQUIRED)
     list(APPEND liblastfm_LIBRARIES ${QT_QTDBUS_LIBRARY})
+    list(APPEND liblastfm_QT5_MODULES DBus)
 endif()
 
 add_library(lastfm SHARED ${liblastfm_SOURCES})
+qt5_use_modules(lastfm ${liblastfm_QT5_MODULES})
+
 target_link_libraries(lastfm ${liblastfm_LIBRARIES})
 set_target_properties(lastfm PROPERTIES
     VERSION ${LASTFM_VERSION}

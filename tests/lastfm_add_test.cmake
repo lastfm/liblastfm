@@ -6,6 +6,8 @@ macro(lastfm_add_test test_class)
     configure_file(Test${LASTFM_TEST_CLASS}.h Test${LASTFM_TEST_CLASS}.h)
     add_executable(${LASTFM_TEST_CLASS}Test Test${LASTFM_TEST_CLASS}.cpp)
 
+    qt5_use_modules(${LASTFM_TEST_CLASS}Test Core Test Xml Network)
+
     target_link_libraries(${LASTFM_TEST_CLASS}Test
         lastfm
         ${QT_QTTEST_LIBRARY}
