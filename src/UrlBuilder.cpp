@@ -62,7 +62,11 @@ lastfm::UrlBuilder::url() const
     QUrl url;
     url.setScheme( "http" );
     url.setHost( host() );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    url.setPath( d->path );
+#else
     url.setEncodedPath( d->path );
+#endif
     return url;
 }
 
