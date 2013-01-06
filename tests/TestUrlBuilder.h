@@ -41,10 +41,10 @@ private slots:
     void encode() /** @author <jono@last.fm> */
     {
         QFETCH( QString, input );
-        QFETCH( QString, output );    
-        QCOMPARE( lastfm::UrlBuilder::encode( input ), output.toAscii() );
+        QFETCH( QString, output );
+        QCOMPARE( lastfm::UrlBuilder::encode( input ), output.toLatin1() );
     }
-    
+
     void encode_data() /** @author <jono@last.fm> */
     {
         QTest::addColumn<QString>("input");

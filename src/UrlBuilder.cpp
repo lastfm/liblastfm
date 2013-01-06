@@ -32,7 +32,7 @@ public:
 lastfm::UrlBuilder::UrlBuilder( const QString& base )
     : d( new UrlBuilderPrivate )
 {
-    d->path = '/' + base.toAscii();
+    d->path = '/' + base.toLatin1();
 }
 
 
