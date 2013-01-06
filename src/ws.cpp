@@ -1,5 +1,5 @@
 /*
-   Copyright 2009 Last.fm Ltd. 
+   Copyright 2009 Last.fm Ltd.
       - Primarily authored by Max Howell, Jono Cole and Doug Mansell
 
    This file is part of liblastfm.
@@ -79,7 +79,7 @@ lastfm::ws::ParseError::operator=( const ParseError& that )
     return *this;
 }
 
-QString 
+QString
 lastfm::ws::host()
 {
     QStringList const args = QCoreApplication::arguments();
@@ -103,8 +103,8 @@ static QUrl baseUrl()
 }
 
 static QString iso639()
-{ 
-    return QLocale().name().left( 2 ).toLower(); 
+{
+    return QLocale().name().left( 2 ).toLower();
 }
 
 void autograph( QMap<QString, QString>& params )
@@ -160,7 +160,7 @@ lastfm::ws::get( QMap<QString, QString> params )
 
 QNetworkReply*
 lastfm::ws::post( QMap<QString, QString> params, bool sk )
-{   
+{
     sign( params, sk );
     QByteArray query;
     QMapIterator<QString, QString> i( params );
@@ -275,7 +275,7 @@ namespace lastfm
         const char* ApiKey;
 
         /** if this is found set to "" we conjure ourselves a suitable one */
-        const char* UserAgent = 0;   
+        const char* UserAgent = 0;
     }
 }
 
