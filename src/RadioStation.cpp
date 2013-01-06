@@ -111,8 +111,8 @@ lastfm::RadioStation::library( QList<lastfm::User>& users )
 
     else {
         QString title;
-        for( QList<lastfm::User>::const_iterator i = users.begin(); i != users.end(); i++ ) {
-            if( i == users.end() - 1 )
+        for( QList<lastfm::User>::const_iterator i = users.constBegin(); i != users.constEnd(); i++ ) {
+            if( i == users.constEnd() - 1 )
                 title += " and " + *i;
             else
                 title += ", " + *i;
