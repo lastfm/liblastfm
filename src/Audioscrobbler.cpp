@@ -64,8 +64,8 @@ lastfm::Audioscrobbler::Audioscrobbler( const QString& id )
 
 lastfm::Audioscrobbler::~Audioscrobbler()
 {
-    d->m_nowPlayingReply->abort();
-    d->m_scrobbleReply->abort();
+    if ( d->m_nowPlayingReply ) d->m_nowPlayingReply->abort();
+    if ( d->m_scrobbleReply ) d->m_scrobbleReply->abort();
     delete d;
 }
 
