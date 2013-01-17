@@ -27,8 +27,10 @@
 #include <QLocale>
 #include <QStringList>
 #include <QUrl>
+#include <QNetworkProxy>
 #include <QThread>
 #include <QMutex>
+#include <stdlib.h>
 
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     #include <QUrlQuery>
@@ -194,6 +196,24 @@ lastfm::nam()
     if ( !threadNamHash.contains( thread ) )
     {
         NetworkAccessManager* newNam = new NetworkAccessManager();
+
+        // In case the HTTP_PROXY environment variable is set,
+        // use it for network access
+        QString sproxy = QString( getenv("HTTP_PROXY") );
+        if ( !sproxy.isEmpty() )
+        {
+            QUrl uproxy = QUrl( sproxy );
+
+            QNetworkProxy proxy = QNetworkProxy();
+            proxy.setType( QNetworkProxy::HttpProxy );
+            proxy.setHostName( uproxy.host() );
+            proxy.setPort( uproxy.port() );
+            proxy.setUser( uproxy.userName() );
+            proxy.setPassword( uproxy.password() );
+
+            newNam->setProxy( proxy );
+        }
+
         threadNamHash[thread] = newNam;
         ourNamSet.insert( thread );
         return newNam;
