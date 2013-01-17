@@ -80,7 +80,7 @@ namespace lastfm
             SubscribersOnly,
 
             Reserved13,
-            Reserved14,
+            TokenNotAuthorised,
             Reserved15,
 
             /** Last.fm sucks. 
