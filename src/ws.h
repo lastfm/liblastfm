@@ -115,10 +115,10 @@ namespace lastfm
             Https
         };
 
-		/** Set the scheme for all web service calls. Note that it will only use
-		  * Https if SSL is supported on the user's machine otherwise it will
-		  * default to Http.
-		  */
+        /** Set the scheme for all web service calls. Note that it will only use
+          * Https if SSL is supported on the user's machine otherwise it will
+          * default to Http.
+          */
         LASTFM_DLLEXPORT void setScheme( Scheme scheme );
         LASTFM_DLLEXPORT Scheme scheme();
         
