@@ -29,12 +29,13 @@
 #include <QUrl>
 #include <QThread>
 #include <QMutex>
+#include <QSslSocket>
 
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     #include <QUrlQuery>
 #endif
 
-
+static lastfm::ws::Scheme theScheme = lastfm::ws::Http;
 static QMap< QThread*, QNetworkAccessManager* > threadNamHash;
 static QSet< QThread* > ourNamSet;
 static QMutex namAccessMutex;
@@ -83,6 +84,18 @@ lastfm::ws::ParseError::operator=( const ParseError& that )
     return *this;
 }
 
+lastfm::ws::Scheme
+lastfm::ws::scheme()
+{
+    return QSslSocket::supportsSsl() ? theScheme : Http;
+}
+
+void
+lastfm::ws::setScheme( lastfm::ws::Scheme scheme )
+{
+    theScheme = scheme;
+}
+
 QString
 lastfm::ws::host()
 {
@@ -100,7 +113,7 @@ lastfm::ws::host()
 static QUrl baseUrl()
 {
     QUrl url;
-    url.setScheme( "http" );
+    url.setScheme( lastfm::ws::scheme() == lastfm::ws::Https ? "https" : "http" );
     url.setHost( lastfm::ws::host() );
     url.setPath( "/2.0/" );
 

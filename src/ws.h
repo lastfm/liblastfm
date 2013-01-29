@@ -108,6 +108,19 @@ namespace lastfm
             /** call QNetworkReply::error() as it's nothing to do with us */
             UnknownError
         };
+
+        enum Scheme
+        {
+            Http,
+            Https
+        };
+
+		/** Set the scheme for all web service calls. Note that it will only use
+		  * Https if SSL is supported on the user's machine otherwise it will
+		  * default to Http.
+		  */
+        LASTFM_DLLEXPORT void setScheme( Scheme scheme );
+        LASTFM_DLLEXPORT Scheme scheme();
         
         LASTFM_DLLEXPORT QString host();
 
