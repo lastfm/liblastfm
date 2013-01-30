@@ -33,7 +33,6 @@ namespace lastfm
     {
     private:
         QExplicitlySharedDataPointer<class ArtistData> d;
-        QString parseBiography( QString bio ) const;
 
     public:
         Artist();

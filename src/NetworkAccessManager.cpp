@@ -31,6 +31,39 @@
 #include "mac/ProxyDict.h"
 #endif
 
+class NetworkAccessManagerPrivate
+{
+    public:
+    NetworkAccessManagerPrivate();
+    QNetworkProxy userProxy;
+};
+
+NetworkAccessManagerPrivate::NetworkAccessManagerPrivate() :
+    userProxy( QNetworkProxy( QNetworkProxy::DefaultProxy ) )
+{
+}
+
+
+// TODO: Use a d-pointer on the next SONAME bump
+typedef QHash< const lastfm::NetworkAccessManager *, NetworkAccessManagerPrivate *> NamPrivateHash;
+Q_GLOBAL_STATIC( NamPrivateHash, d_func );
+static NetworkAccessManagerPrivate * d( const lastfm::NetworkAccessManager * nam )
+{
+    NetworkAccessManagerPrivate * ret = d_func()->value( nam, 0 );
+    if ( !ret )
+    {
+        ret = new NetworkAccessManagerPrivate;
+        d_func()->insert( nam, ret );
+    }
+    return ret;
+}
+static void delete_d( const lastfm::NetworkAccessManager * nam )
+{
+    const NetworkAccessManagerPrivate * ret = d_func()->value( nam, 0 );
+    delete ret;
+    d_func()->remove( nam );
+}
+
 
 static struct NetworkAccessManagerInit
 {
@@ -84,7 +117,6 @@ lastfm::NetworkAccessManager::NetworkAccessManager( QObject* parent )
                , m_pac( 0 )
                , m_monitor( 0 )
             #endif
-               , m_userProxy( QNetworkProxy( QNetworkProxy::DefaultProxy ) )
 {
     // can't be done in above init, as applicationName() won't be set
     if (lastfm::UserAgent.isEmpty())
@@ -102,12 +134,13 @@ lastfm::NetworkAccessManager::~NetworkAccessManager()
 #if defined WIN32 && ! defined __MINGW32__
     delete m_pac;
 #endif
+    delete_d( this );
 }
 
 void
 lastfm::NetworkAccessManager::setUserProxy( const QNetworkProxy& proxy )
 {
-    m_userProxy = proxy;
+    d( this )->userProxy = proxy;
 }
 
 QNetworkProxy
@@ -115,8 +148,8 @@ lastfm::NetworkAccessManager::proxy( const QNetworkRequest& request )
 {   
     Q_UNUSED( request );
 
-    if ( m_userProxy.type() != QNetworkProxy::DefaultProxy )
-        return m_userProxy;
+    if ( d( this )->userProxy.type() != QNetworkProxy::DefaultProxy )
+        return d( this )->userProxy;
 
 #if defined WIN32 && ! defined __MINGW32__
     IeSettings s;
