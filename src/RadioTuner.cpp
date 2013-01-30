@@ -254,6 +254,12 @@ RadioTuner::onGetPlaylistReturn()
 }
 
 void
+RadioTuner::onXspfExpired()
+{
+    // no-op
+}
+
+void
 RadioTuner::queueTrack( lastfm::Track& track )
 {
     d->m_playlist.insert( 0, track );

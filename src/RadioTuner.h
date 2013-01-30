@@ -57,6 +57,8 @@ namespace lastfm
     private slots:
         void onTuneReturn();
         void onGetPlaylistReturn();
+        // no-op
+        Q_DECL_DEPRECATED void onXspfExpired();
 
     private:
         class RadioTunerPrivate * const d;
