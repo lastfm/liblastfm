@@ -1,8 +1,3 @@
-Join us for chats on IRC!
-
-Server: irc.last.fm
-Channel: #last.desktop
-
 # liblastfm
 
 liblastfm is a collection of libraries to help you integrate Last.fm services
@@ -13,27 +8,35 @@ Michael Coffey http://twitter.com/eartle
 
 Fork it: http://github.com/lastfm/liblastfm
 
+Join us for chats on IRC!
+
+Server: irc.last.fm
+Channel: #last.desktop
+
 # Dependencies
 
-liblastfm dynamically links to:
+liblastfm requires:
 
-* Qt 4.8 http://qt.nokia.com/
+* Qt 4.8 http://qt.digia.com/
+* FFTW http://www.fftw.org/
+* libsamplerate http://www.mega-nerd.com/SRC/
 
-Additionally, to build you will need Ruby and GNU make (or Microsoft nmake).
+Additionally, to build it you will need:
+
+* Ruby
+* cmake
 
 ## Mac OS X
 
 We recommend that you use Homebrew to install dependancies http://mxcl.github.com/homebrew/
 
-```
     brew install qt
-```
 
 ## Linux/*NIX
 
 Do something like this:
 
-    sudo apt-get install qt4-qmake pkg-config ruby g++ libqt4-dev
+    sudo apt-get install qt4-qmake pkg-config ruby g++ libqt4-dev cmake libfftw-dev libsamplerate0-dev
 
 Please note, we have only tested on Linux, but we think it'll work on all
 varieties of UNIX. If it doesn't, report the bug to eartle on GitHub.
@@ -50,14 +53,12 @@ available.
 
 Open a plain Windows shell, and see the next section.
 
-
 # Installing liblastfm
 
-```
     mkdir _build && cd _build
     cmake ..
+    make -j4
     sudo make install
-```
 
 # Using liblastfm
 
@@ -75,9 +76,7 @@ You need an API key from http://last.fm/api to use the webservice API.
 
 Your link line needs to include the following:
 
-```
     -llastfm -lQtCore -lQtNetwork -lQtXml
-```
 
 ## Radio
 
