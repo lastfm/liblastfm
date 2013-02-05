@@ -96,7 +96,6 @@ lastfm::Audioscrobbler::cacheBatch( const QList<lastfm::Track>& tracks, const QS
 {
     d->m_cache.add( tracks );
     emit scrobblesCached( tracks );
-    submit();
 }
 
 void
