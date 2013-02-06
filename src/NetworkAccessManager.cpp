@@ -180,9 +180,7 @@ lastfm::NetworkAccessManager::createRequest( Operation op, const QNetworkRequest
     request.setRawHeader( "User-Agent", lastfm::UserAgent );
     
     // PAC proxies can vary by domain, so we have to check everytime :(
-    QNetworkProxy proxy = this->proxy( request );
-    if (proxy.type() != QNetworkProxy::NoProxy)
-        QNetworkAccessManager::setProxy( proxy );
+    QNetworkAccessManager::setProxy( this->proxy( request ) );
 
     return QNetworkAccessManager::createRequest( op, request, outgoingData );
 }
