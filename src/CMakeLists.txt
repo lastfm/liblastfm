@@ -51,7 +51,6 @@ if(WIN32)
         list(APPEND liblastfm_SOURCES
             win/WNetworkConnectionMonitor_win.cpp
             win/WmiSink.cpp
-            win/Pac.cpp
             win/NdisEvents.cpp
         )
         list(APPEND liblastfm_LIBRARIES

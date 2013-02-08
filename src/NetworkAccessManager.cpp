@@ -23,13 +23,6 @@
 #include "misc.h"
 #include <QCoreApplication>
 #include <QNetworkRequest>
-#if defined WIN32 && ! defined __MINGW32__
-    #include "win/IeSettings.h"
-    #include "win/Pac.h"
-#endif
-#ifdef __APPLE__
-#include "mac/ProxyDict.h"
-#endif
 
 class NetworkAccessManagerPrivate
 {
@@ -46,7 +39,7 @@ NetworkAccessManagerPrivate::NetworkAccessManagerPrivate() :
 
 // TODO: Use a d-pointer on the next SONAME bump
 typedef QHash< const lastfm::NetworkAccessManager *, NetworkAccessManagerPrivate *> NamPrivateHash;
-Q_GLOBAL_STATIC( NamPrivateHash, d_func );
+Q_GLOBAL_STATIC( NamPrivateHash, d_func )
 static NetworkAccessManagerPrivate * d( const lastfm::NetworkAccessManager * nam )
 {
     NetworkAccessManagerPrivate * ret = d_func()->value( nam, 0 );
@@ -65,46 +58,6 @@ static void delete_d( const lastfm::NetworkAccessManager * nam )
 }
 
 
-static struct NetworkAccessManagerInit
-{
-    // We do this upfront because then our Firehose QTcpSocket will have a proxy 
-    // set by default. As well as any plain QNetworkAcessManager stuff, and the
-    // scrobbler
-    // In theory we should do this every request in case the configuration 
-    // changes but that is fairly unlikely use case, init? Maybe we should 
-    // anyway..
-
-    NetworkAccessManagerInit()
-    {
-    #if defined WIN32 && ! defined __MINGW32__
-        IeSettings s;
-        // if it's autodetect, we determine the proxy everytime in proxy()
-        // we don't really want to do a PAC lookup here, as it times out
-        // at two seconds, so that hangs startup
-        if (!s.fAutoDetect && s.lpszProxy)
-        {
-            QUrl url( QString::fromUtf16(s.lpszProxy) );
-            QNetworkProxy proxy( QNetworkProxy::HttpProxy );
-            proxy.setHostName( url.host() );
-            proxy.setPort( url.port() );
-            QNetworkProxy::setApplicationProxy( proxy );
-        }
-    #endif
-    #ifdef __APPLE__
-        ProxyDict dict;
-        if (dict.isProxyEnabled())
-        {
-            QNetworkProxy proxy( QNetworkProxy::HttpProxy );
-            proxy.setHostName( dict.host );
-            proxy.setPort( dict.port );
-
-            QNetworkProxy::setApplicationProxy( proxy );
-        }
-    #endif
-    }
-} init;    
-
-
 namespace lastfm 
 {
     LASTFM_DLLEXPORT QByteArray UserAgent;
@@ -114,7 +67,6 @@ namespace lastfm
 lastfm::NetworkAccessManager::NetworkAccessManager( QObject* parent )
                : QNetworkAccessManager( parent )
             #if defined WIN32 && ! defined __MINGW32__
-               , m_pac( 0 )
                , m_monitor( 0 )
             #endif
 {
@@ -131,9 +83,6 @@ lastfm::NetworkAccessManager::NetworkAccessManager( QObject* parent )
 
 lastfm::NetworkAccessManager::~NetworkAccessManager()
 {
-#if defined WIN32 && ! defined __MINGW32__
-    delete m_pac;
-#endif
     delete_d( this );
 }
 
@@ -146,28 +95,12 @@ lastfm::NetworkAccessManager::setUserProxy( const QNetworkProxy& proxy )
 QNetworkProxy
 lastfm::NetworkAccessManager::proxy( const QNetworkRequest& request )
 {   
-    Q_UNUSED( request );
-
     if ( d( this )->userProxy.type() != QNetworkProxy::DefaultProxy )
         return d( this )->userProxy;
 
-#if defined WIN32 && ! defined __MINGW32__
-    IeSettings s;
-    if (s.fAutoDetect) 
-    {
-        if (!m_pac) {
-            m_pac = new Pac;
-            if ( !m_monitor )
-            {
-                m_monitor = new InternetConnectionMonitor( this );
-                connect( m_monitor, SIGNAL( connectivityChanged( bool ) ), SLOT( onConnectivityChanged( bool ) ) );
-            }
-        }
-        return m_pac->resolve( request, s.lpszAutoConfigUrl );
-    } 
-#endif
-    
-    return QNetworkProxy::applicationProxy();
+    QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery( request.url() );
+
+    return proxies[0];
 }
 
 
@@ -190,8 +123,4 @@ void
 lastfm::NetworkAccessManager::onConnectivityChanged( bool up )
 {
     Q_UNUSED( up );
-
-#if defined WIN32 && ! defined __MINGW32__
-    if (up && m_pac) m_pac->resetFailedState();
-#endif
 }
