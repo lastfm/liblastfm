@@ -55,6 +55,7 @@ lastfm::Xspf::Xspf( const QDomElement& playlist_node, QObject* parent )
     {
         MutableTrack t;
         t.setUrl( e["location"].text() );
+        t.setImageUrl( AbstractType::LargeImage, e["image"].text() );
         t.setExtra( "trackauth", e["extension"]["trackauth"].text() );
         t.setTitle( e["title"].text() );
         t.setArtist( e["creator"].text() );
