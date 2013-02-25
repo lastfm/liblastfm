@@ -30,6 +30,7 @@ class lastfm::ScrobblePointPrivate
 {
 public:
     uint i;
+    bool enforceScrobbleTimeMax;
 };
 
 
@@ -37,6 +38,7 @@ lastfm::ScrobblePoint::ScrobblePoint()
     : d( new ScrobblePointPrivate )
 {
     d->i = SCROBBLE_TIME_MAX;
+    d->enforceScrobbleTimeMax = true;
 }
 
 
@@ -47,15 +49,16 @@ lastfm::ScrobblePoint::ScrobblePoint( uint j )
     // cruel and callous people
     if (j == 0) --j;
 
-    d->i = qBound( uint(SCROBBLE_TIME_MIN),
-                j,
-                uint(SCROBBLE_TIME_MAX) );
+    d->i = j;
+    d->enforceScrobbleTimeMax = true;
 }
 
 
 lastfm::ScrobblePoint::ScrobblePoint( const ScrobblePoint& that )
-    : d( new ScrobblePointPrivate( *that.d ) )
+    : d( new ScrobblePointPrivate )
 {
+    d->i = that.d->i;
+    d->enforceScrobbleTimeMax = that.d->enforceScrobbleTimeMax;
 }
 
 
@@ -65,9 +68,18 @@ lastfm::ScrobblePoint::~ScrobblePoint()
 }
 
 
+void
+lastfm::ScrobblePoint::setEnforceScrobbleTimeMax( bool enforceScrobbleTimeMax )
+{
+    d->enforceScrobbleTimeMax = enforceScrobbleTimeMax;
+}
+
+
 lastfm::ScrobblePoint::operator uint() const
 {
-    return d->i;
+    return qBound( uint(SCROBBLE_TIME_MIN),
+                        d->i,
+                        d->enforceScrobbleTimeMax ? uint(SCROBBLE_TIME_MAX) : 0xFFFFFFFF );
 }
 
 
@@ -75,6 +87,7 @@ lastfm::ScrobblePoint&
 lastfm::ScrobblePoint::operator=( const ScrobblePoint& that )
 {
     d->i = that.d->i;
+    d->enforceScrobbleTimeMax = that.d->enforceScrobbleTimeMax;
     return *this;
 }
 

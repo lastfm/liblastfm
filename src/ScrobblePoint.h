@@ -38,6 +38,8 @@ public:
     operator uint() const;
     ScrobblePoint& operator=( const ScrobblePoint& that );
 
+    void setEnforceScrobbleTimeMax( bool enforceScrobbleTimeMax );
+
     // scrobbles can occur between these two percentages of track duration
     static uint scrobblePercentMin();      //  50
     static uint scrobblePercentMax();      // 100
