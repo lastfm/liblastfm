@@ -23,7 +23,6 @@ liblastfm requires:
 
 Additionally, to build it you will need:
 
-* Ruby
 * cmake
 
 ## Mac OS X
@@ -36,14 +35,14 @@ We recommend that you use Homebrew to install dependancies http://mxcl.github.co
 
 Do something like this:
 
-    sudo apt-get install qt4-qmake pkg-config ruby g++ libqt4-dev cmake libfftw-dev libsamplerate0-dev
+    sudo apt-get install qt4-qmake pkg-config g++ libqt4-dev cmake libfftw-dev libsamplerate0-dev
 
 Please note, we have only tested on Linux, but we think it'll work on all
 varieties of UNIX. If it doesn't, report the bug to eartle on GitHub.
 
 ## Windows
 
-Install Ruby. Install Visual Studio 2008 or higher. Install Qt. Install the
+Install Visual Studio 2008 or higher. Install Qt. Install the
 Windows Server 2003 Platform SDK r2:
 
 http://www.microsoft.com/Downloads/details.aspx?FamilyID=484269e2-3b89-47e3-8eb7-1f2be6d7123a
