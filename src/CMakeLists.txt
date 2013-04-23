@@ -35,6 +35,7 @@ set(liblastfm_SOURCES
         RadioTuner.cpp
         RadioStation.cpp
         XmlQuery.cpp
+        Url.cpp
         UrlBuilder.cpp
         misc.cpp
         Chart.cpp

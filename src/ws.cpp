@@ -20,6 +20,7 @@
 #include "ws.h"
 #include "misc.h"
 #include "NetworkAccessManager.h"
+#include "Url.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
@@ -30,10 +31,6 @@
 #include <QThread>
 #include <QMutex>
 #include <QSslSocket>
-
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-    #include <QUrlQuery>
-#endif
 
 static lastfm::ws::Scheme theScheme = lastfm::ws::Http;
 static QMap< QThread*, QNetworkAccessManager* > threadNamHash;
@@ -155,21 +152,17 @@ QUrl
 lastfm::ws::url( QMap<QString, QString> params, bool sk )
 {
     lastfm::ws::sign( params, sk );
-    QUrl url = ::baseUrl();
+    lastfm::Url url = lastfm::Url( ::baseUrl() );
     // Qt setQueryItems doesn't encode a bunch of stuff, so we do it manually
     QMapIterator<QString, QString> i( params );
     while (i.hasNext()) {
         i.next();
         QByteArray const key = QUrl::toPercentEncoding( i.key() );
         QByteArray const value = QUrl::toPercentEncoding( i.value() );
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-        QUrlQuery(url).addQueryItem( key, value );
-#else
-        url.addEncodedQueryItem( key, value );
-#endif
+        url.addQueryItem( key, value );
     }
 
-    return url;
+    return url.url();
 }
 
 
