@@ -34,7 +34,7 @@ class LASTFM_DLLEXPORT NetworkAccessManager : public QNetworkAccessManager
 {
     Q_OBJECT
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     class InternetConnectionMonitor* m_monitor;
 #endif
 
