@@ -23,7 +23,7 @@
 
 #include "../NetworkConnectionMonitor.h"
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include <SystemConfiguration/SCNetwork.h> //TODO remove
 #include <SystemConfiguration/SCNetworkReachability.h>
 #endif
@@ -42,7 +42,7 @@ public:
 private slots:
 
 private:
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     static void callback( SCNetworkReachabilityRef target,
                           SCNetworkConnectionFlags flags,
                           void *info );

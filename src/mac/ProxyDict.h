@@ -19,7 +19,6 @@
 */
 #include <SystemConfiguration/SystemConfiguration.h>
 
-
 struct ProxyDict
 {
     ProxyDict();
