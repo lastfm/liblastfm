@@ -23,6 +23,7 @@
 #include "misc.h"
 #include <QCoreApplication>
 #include <QNetworkRequest>
+#include <QNetworkProxyQuery>
 
 class NetworkAccessManagerPrivate
 {
@@ -98,7 +99,7 @@ lastfm::NetworkAccessManager::proxy( const QNetworkRequest& request )
     if ( d( this )->userProxy.type() != QNetworkProxy::DefaultProxy )
         return d( this )->userProxy;
 
-    QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery( request.url() );
+    QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery( QNetworkProxyQuery( request.url() ) );
 
     return proxies[0];
 }

@@ -131,11 +131,11 @@ lastfm::InternetConnectionMonitor::createNetworkConnectionMonitor()
 {
     NetworkConnectionMonitor* ncm = 0;
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_X11
     ncm = new LNetworkConnectionMonitor( this );
-#elif defined(Q_WS_WIN) && ! defined __MINGW32__
+#elif defined(Q_OS_WIN) && ! defined __MINGW32__
     ncm = new WNetworkConnectionMonitor( this );
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
     ncm = new MNetworkConnectionMonitor( this );
 #endif
 
