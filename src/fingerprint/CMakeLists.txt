@@ -40,6 +40,8 @@ set_target_properties(lastfm_fingerprint PROPERTIES
     SOVERSION ${LASTFM_SOVERSION}
 )
 
+qt5_use_modules(lastfm_fingerprint Network Sql Xml)
+
 install(TARGETS lastfm_fingerprint
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
