@@ -30,6 +30,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QStringList>
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    #include <QUrlQuery>
+#endif
 #include <fstream>
 
 #include "User.h"
@@ -263,8 +266,26 @@ lastfm::Fingerprint::submit() const
     QString const path = t.url().toLocalFile();
     QFileInfo const fi( path );
 
-    #define e( x ) QUrl::toPercentEncoding( x )
     QUrl url( "http://ws.audioscrobbler.com/fingerprint/query/" );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    QUrlQuery urlQuery( url );
+    urlQuery.addQueryItem( "username", lastfm::User().name() );
+    urlQuery.addQueryItem( "artist", t.artist() );
+    urlQuery.addQueryItem( "album", t.album() );
+    urlQuery.addQueryItem( "track", t.title() );
+    urlQuery.addQueryItem( "duration", number( d->m_duration > 0 ? d->m_duration : t.duration() ) );
+    urlQuery.addQueryItem( "mbid", t.mbid() );
+    urlQuery.addQueryItem( "filename", fi.completeBaseName() );
+    urlQuery.addQueryItem( "fileextension", fi.completeSuffix() );
+    urlQuery.addQueryItem( "tracknum", number( t.trackNumber() ) );
+    urlQuery.addQueryItem( "sha256", sha256( path ) );
+    urlQuery.addQueryItem( "time", number(QDateTime::currentDateTime().toTime_t()) );
+    urlQuery.addQueryItem( "fpversion", QByteArray::number((int)fingerprint::FingerprintExtractor::getVersion()) );
+    urlQuery.addQueryItem( "fulldump", d->m_complete ? "true" : "false" );
+    urlQuery.addQueryItem( "noupdate", "false" );
+    url.setQuery( urlQuery );
+#else
+    #define e( x ) QUrl::toPercentEncoding( x )
     url.addEncodedQueryItem( "username", e(lastfm::User().name()) );
     url.addEncodedQueryItem( "artist", e(t.artist()) );
     url.addEncodedQueryItem( "album", e(t.album()) );
@@ -280,6 +301,7 @@ lastfm::Fingerprint::submit() const
     url.addEncodedQueryItem( "fulldump", d->m_complete ? "true" : "false" );
     url.addEncodedQueryItem( "noupdate", "false" );
     #undef e
+#endif
 
     //FIXME: talk to mir about submitting fplibversion
 
