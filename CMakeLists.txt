@@ -26,7 +26,14 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Module
 
 # setup qt stuff
 set(CMAKE_AUTOMOC ON)
-find_package(Qt5Core QUIET)
+
+option(BUILD_WITH_QT4 "Build liblastfm with Qt4 no matter if Qt5 was found" OFF)
+
+if( NOT BUILD_WITH_QT4 )
+    # try Qt5 first, and prefer that if found
+    find_package(Qt5Core QUIET)
+endif()
+
 if(Qt5Core_DIR)
     message(STATUS "Found Qt5! Please keep in mind, this is highly experimental and not our main development target..")
     include_directories(${Qt5Core_INCLUDE_DIRS})
