@@ -27,7 +27,7 @@
 #endif
 
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 
 QDir
@@ -60,9 +60,9 @@ static QDir dataDotDot()
             return QString::fromLocal8Bit( path );
     }
     return QDir::home();
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
     return QDir::home().filePath( "Library/Application Support" );
-#elif defined(Q_WS_X11)
+#elif defined(Q_OS_X11)
     return QDir::home().filePath( ".local/share" );
 #else
     return QDir::home();
@@ -80,7 +80,7 @@ lastfm::dir::runtimeData()
 QDir
 lastfm::dir::logs()
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     return QDir::home().filePath( "Library/Logs/Last.fm" );
 #else
     return runtimeData();    
@@ -91,7 +91,7 @@ lastfm::dir::logs()
 QDir
 lastfm::dir::cache()
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     return QDir::home().filePath( "Library/Caches/Last.fm" );
 #else
     return runtimeData().filePath( "cache" );
@@ -124,7 +124,7 @@ lastfm::dir::programFiles()
 }
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 CFStringRef
 lastfm::QStringToCFString( const QString &s )
 {
@@ -159,7 +159,7 @@ lastfm::CFStringToUtf8( CFStringRef s )
 const char*
 lastfm::platform()
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     switch (QSysInfo::WindowsVersion)
     {
         case QSysInfo::WV_32s:        return "Windows 3.1 with Win32s";
@@ -182,7 +182,7 @@ lastfm::platform()
 
         default:                      return "Unknown";
     }
-#elif defined Q_WS_MAC
+#elif defined Q_OS_MAC
     switch (QSysInfo::MacintoshVersion)
     {
         case QSysInfo::MV_Unknown:    return "Unknown Mac";
@@ -199,7 +199,7 @@ lastfm::platform()
 
         default:                      return "Unknown";
     }
-#elif defined Q_WS_X11
+#elif defined Q_OS_X11
     return "UNIX X11";
 #else
     return "Unknown";
@@ -213,7 +213,7 @@ md5( const QByteArray& src )
     return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' ).toLower();
 }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 QString
 lastfm::CFStringToQString( CFStringRef s )
 {

@@ -23,7 +23,7 @@
 #include "global.h"
 #include <QDir>
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 typedef const struct __CFString* CFStringRef;
 #endif
 
@@ -31,10 +31,10 @@ namespace lastfm
 {
     namespace dir
     {
-    #ifdef Q_WS_WIN
+    #ifdef Q_OS_WIN
         LASTFM_DLLEXPORT QDir programFiles();
     #endif
-    #ifdef Q_WS_MAC
+    #ifdef Q_OS_MAC
         LASTFM_DLLEXPORT QDir bundle();
     #endif
         LASTFM_DLLEXPORT QDir runtimeData();
@@ -42,7 +42,7 @@ namespace lastfm
         LASTFM_DLLEXPORT QDir logs();
     }
    
-#ifdef Q_WS_MAC 
+#ifdef Q_OS_MAC 
     LASTFM_DLLEXPORT QByteArray CFStringToUtf8( CFStringRef );
     LASTFM_DLLEXPORT CFStringRef QStringToCFString( const QString& );
     LASTFM_DLLEXPORT QString CFStringToQString( CFStringRef s );
