@@ -32,7 +32,7 @@ namespace lastfm
     public:
         explicit Url( const QUrl& url );
 
-        void addQueryItem( const QString& key, const QString& value );
+        void addQueryItem( const QByteArray& key, const QByteArray& value );
 
         QUrl url() const;
 

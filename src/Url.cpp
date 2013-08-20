@@ -31,13 +31,13 @@ lastfm::Url::Url( const QUrl& url )
 }
 
 void
-lastfm::Url::addQueryItem( const QString& key, const QString& value )
+lastfm::Url::addQueryItem( const QByteArray& key, const QByteArray& value )
 {
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     m_query.addQueryItem( key, value );
     m_url.setQuery( m_query );
 #else
-    m_url.addQueryItem( key, value );
+    m_url.addEncodedQueryItem( key, value );
 #endif
 }
 
