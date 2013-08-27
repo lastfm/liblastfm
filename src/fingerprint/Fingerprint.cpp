@@ -30,6 +30,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QStringList>
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    #include <QUrlQuery>
+#endif
 #include <fstream>
 
 #include "User.h"
@@ -248,6 +251,20 @@ static QByteArray number( uint n )
     return n ? QByteArray::number( n ) : "";
 }
 
+
+void
+urlAddQueryItem( QUrl& url, const QString& key, const QString& value )
+{
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    QUrlQuery urlQuery( url );
+    urlQuery.addQueryItem( key, value );
+    url.setQuery( urlQuery );
+#else
+    url.addQueryItem( key, value );
+#endif
+}
+
+
 QNetworkReply*
 lastfm::Fingerprint::submit() const
 {    
@@ -263,23 +280,21 @@ lastfm::Fingerprint::submit() const
     QString const path = t.url().toLocalFile();
     QFileInfo const fi( path );
 
-    #define e( x ) QUrl::toPercentEncoding( x )
     QUrl url( "http://ws.audioscrobbler.com/fingerprint/query/" );
-    url.addEncodedQueryItem( "username", e(lastfm::User().name()) );
-    url.addEncodedQueryItem( "artist", e(t.artist()) );
-    url.addEncodedQueryItem( "album", e(t.album()) );
-    url.addEncodedQueryItem( "track", e(t.title()) );
-    url.addEncodedQueryItem( "duration", number( d->m_duration > 0 ? d->m_duration : t.duration() ) );
-    url.addEncodedQueryItem( "mbid", e(t.mbid()) );
-    url.addEncodedQueryItem( "filename", e(fi.completeBaseName()) );
-    url.addEncodedQueryItem( "fileextension", e(fi.completeSuffix()) );
-    url.addEncodedQueryItem( "tracknum", number( t.trackNumber() ) );
-    url.addEncodedQueryItem( "sha256", sha256( path ).toAscii() );
-    url.addEncodedQueryItem( "time", number(QDateTime::currentDateTime().toTime_t()) );
-    url.addEncodedQueryItem( "fpversion", QByteArray::number((int)fingerprint::FingerprintExtractor::getVersion()) );
-    url.addEncodedQueryItem( "fulldump", d->m_complete ? "true" : "false" );
-    url.addEncodedQueryItem( "noupdate", "false" );
-    #undef e
+    urlAddQueryItem( url, "username", lastfm::User().name() );
+    urlAddQueryItem( url, "artist", t.artist() );
+    urlAddQueryItem( url, "album", t.album() );
+    urlAddQueryItem( url, "track", t.title() );
+    urlAddQueryItem( url, "duration", number( d->m_duration > 0 ? d->m_duration : t.duration() ) );
+    urlAddQueryItem( url, "mbid", t.mbid() );
+    urlAddQueryItem( url, "filename", fi.completeBaseName() );
+    urlAddQueryItem( url, "fileextension", fi.completeSuffix() );
+    urlAddQueryItem( url, "tracknum", number( t.trackNumber() ) );
+    urlAddQueryItem( url, "sha256", sha256( path ) );
+    urlAddQueryItem( url, "time", number(QDateTime::currentDateTime().toTime_t()) );
+    urlAddQueryItem( url, "fpversion", QByteArray::number((int)fingerprint::FingerprintExtractor::getVersion()) );
+    urlAddQueryItem( url, "fulldump", d->m_complete ? "true" : "false" );
+    urlAddQueryItem( url, "noupdate", "false" );
 
     //FIXME: talk to mir about submitting fplibversion
 

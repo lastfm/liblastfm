@@ -1,5 +1,5 @@
 
-find_package(Qt4 COMPONENTS QtCore QtSql REQUIRED)
+#find_package(Qt4 COMPONENTS QtCore QtSql REQUIRED)
 #FIXME: find modules are horrible, port them to find_package_handle_standard_args
 find_package(LibSamplerate REQUIRED)
 find_package(LibFFTW3 REQUIRED)
@@ -39,6 +39,8 @@ set_target_properties(lastfm_fingerprint PROPERTIES
     VERSION ${LASTFM_VERSION_STRING}
     SOVERSION ${LASTFM_SOVERSION}
 )
+
+qt5_use_modules(lastfm_fingerprint Network Sql Xml)
 
 install(TARGETS lastfm_fingerprint
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
