@@ -20,24 +20,46 @@
 
 #include "Url.h"
 
-
-lastfm::Url::Url( const QUrl& url )
-    :m_url( url )
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-    , m_query( url.query() )
+#include <QUrlQuery>
+#endif
+
+class lastfm::UrlPrivate
+{
+    public:
+        UrlPrivate( const QUrl& url );
+        QUrl url;
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+        QUrlQuery query;
+#endif
+};
+
+lastfm::UrlPrivate::UrlPrivate( const QUrl& u )
+    : url( u )
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    , query( u.query() )
 #endif
 {
+}
 
+lastfm::Url::Url( const QUrl& url )
+    :d( new UrlPrivate( url ) )
+{
+}
+
+lastfm::Url::~Url()
+{
+    delete d;
 }
 
 void
 lastfm::Url::addQueryItem( const QString& key, const QString& value )
 {
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-    m_query.addQueryItem( key, value );
-    m_url.setQuery( m_query );
+    d->query.addQueryItem( key, value );
+    d->url.setQuery( d->query );
 #else
-    m_url.addQueryItem( key, value );
+    d->url.addQueryItem( key, value );
 #endif
 }
 
@@ -47,8 +69,19 @@ lastfm::Url::operator()()
     return url();
 }
 
+lastfm::Url&
+lastfm::Url::operator=( const lastfm::Url& that )
+{
+    d->url = that.d->url;
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
+    d->query = that.d->query;
+#endif
+    return *this;
+}
+
+
 QUrl
 lastfm::Url::url() const
 {
-    return m_url;
+    return d->url;
 }
