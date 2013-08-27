@@ -19,30 +19,28 @@
 */
 #pragma once
 
+#include "global.h"
+
 #include <QUrl>
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-#include <QUrlQuery>
-#endif
 
 
 namespace lastfm
 {
-    class Url
+    class LASTFM_DLLEXPORT Url
     {
     public:
         explicit Url( const QUrl& url );
+        ~Url();
 
         void addQueryItem( const QString& key, const QString& value );
 
         QUrl url() const;
 
         QUrl operator()();
+        Url& operator=( const Url& that );
 
     private:
-        QUrl m_url;
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-        QUrlQuery m_query;
-#endif
+        class UrlPrivate * const d;
     };
 }
 
