@@ -19,6 +19,8 @@
 */
 #pragma once
 
+#include "global.h"
+
 #include <QUrl>
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
 #include <QUrlQuery>
@@ -27,7 +29,7 @@
 
 namespace lastfm
 {
-    class Url
+    class LASTFM_DLLEXPORT Url
     {
     public:
         explicit Url( const QUrl& url );
