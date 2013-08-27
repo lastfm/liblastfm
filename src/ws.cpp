@@ -157,8 +157,8 @@ lastfm::ws::url( QMap<QString, QString> params, bool sk )
     QMapIterator<QString, QString> i( params );
     while (i.hasNext()) {
         i.next();
-        QByteArray const key = QUrl::toPercentEncoding( i.key() );
-        QByteArray const value = QUrl::toPercentEncoding( i.value() );
+        QString const key = i.key();
+        QString const value = i.value();
         url.addQueryItem( key, value );
     }
 

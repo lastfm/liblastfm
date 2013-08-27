@@ -100,7 +100,7 @@ lastfm::TrackContext::operator=( const TrackContext& that )
     return *this;
 }
 
-class lastfm::TrackObject : public QObject
+class TrackObject : public QObject
 {
     Q_OBJECT
 public:
@@ -284,39 +284,39 @@ lastfm::Track::Track( const QDomElement& e )
 }
 
 void
-lastfm::TrackObject::onLoveFinished()
+TrackObject::onLoveFinished()
 {
-    XmlQuery lfm;
+    lastfm::XmlQuery lfm;
 
     if ( lfm.parse( static_cast<QNetworkReply*>(sender()) ) )
     {
         if ( lfm.attribute( "status" ) == "ok")
-            m_data.loved = Track::Loved;
+            m_data.loved = lastfm::Track::Loved;
 
     }
 
-    emit loveToggled( m_data.loved == Track::Loved );
+    emit loveToggled( m_data.loved == lastfm::Track::Loved );
 }
 
 
 void
-lastfm::TrackObject::onUnloveFinished()
+TrackObject::onUnloveFinished()
 {
-    XmlQuery lfm;
+    lastfm::XmlQuery lfm;
 
     if ( lfm.parse( static_cast<QNetworkReply*>(sender()) ) )
     {
         if ( lfm.attribute( "status" ) == "ok")
-            m_data.loved = Track::Unloved;
+            m_data.loved = lastfm::Track::Unloved;
     }
 
-    emit loveToggled( m_data.loved == Track::Loved );
+    emit loveToggled( m_data.loved == lastfm::Track::Loved );
 }
 
 void
-lastfm::TrackObject::onGotInfo()
+TrackObject::onGotInfo()
 {
-    TrackData::Observer observer;
+    lastfm::TrackData::Observer observer;
 
     for ( int i = 0 ; i < m_data.observers.count() ; ++i )
     {
@@ -338,24 +338,24 @@ lastfm::TrackObject::onGotInfo()
         qDebug() << lfm;
 
         QString imageUrl = lfm["track"]["image size=small"].text();
-        if ( !imageUrl.isEmpty() ) m_data.m_images[AbstractType::SmallImage] = imageUrl;
+        if ( !imageUrl.isEmpty() ) m_data.m_images[lastfm::AbstractType::SmallImage] = imageUrl;
         imageUrl = lfm["track"]["image size=medium"].text();
-        if ( !imageUrl.isEmpty() ) m_data.m_images[AbstractType::MediumImage] = imageUrl;
+        if ( !imageUrl.isEmpty() ) m_data.m_images[lastfm::AbstractType::MediumImage] = imageUrl;
         imageUrl = lfm["track"]["image size=large"].text();
-        if ( !imageUrl.isEmpty() ) m_data.m_images[AbstractType::LargeImage] = imageUrl;
+        if ( !imageUrl.isEmpty() ) m_data.m_images[lastfm::AbstractType::LargeImage] = imageUrl;
         imageUrl = lfm["track"]["image size=extralarge"].text();
-        if ( !imageUrl.isEmpty() ) m_data.m_images[AbstractType::ExtraLargeImage] = imageUrl;
+        if ( !imageUrl.isEmpty() ) m_data.m_images[lastfm::AbstractType::ExtraLargeImage] = imageUrl;
         imageUrl = lfm["track"]["image size=mega"].text();
-        if ( !imageUrl.isEmpty() ) m_data.m_images[AbstractType::MegaImage] = imageUrl;
+        if ( !imageUrl.isEmpty() ) m_data.m_images[lastfm::AbstractType::MegaImage] = imageUrl;
 
         if ( lfm["track"]["userloved"].text().length() > 0 )
-            m_data.loved = lfm["track"]["userloved"].text() == "0" ? Track::Unloved : Track::Loved;
+            m_data.loved = lfm["track"]["userloved"].text() == "0" ? lastfm::Track::Unloved : lastfm::Track::Loved;
 
         if ( observer.receiver )
             if ( !QMetaObject::invokeMethod( observer.receiver, observer.method, Q_ARG(QByteArray, data) ) )
                 QMetaObject::invokeMethod( observer.receiver, observer.method );
 
-        emit loveToggled( m_data.loved == Track::Loved );
+        emit loveToggled( m_data.loved == lastfm::Track::Loved );
     }
     else
     {
@@ -366,19 +366,19 @@ lastfm::TrackObject::onGotInfo()
 }
 
 void
-lastfm::TrackObject::forceLoveToggled( bool love )
+TrackObject::forceLoveToggled( bool love )
 {
     emit loveToggled( love );
 }
 
 void
-lastfm::TrackObject::forceScrobbleStatusChanged()
+TrackObject::forceScrobbleStatusChanged()
 {
     emit scrobbleStatusChanged( m_data.scrobbleStatus );
 }
 
 void
-lastfm::TrackObject::forceCorrected( QString correction )
+TrackObject::forceCorrected( QString correction )
 {
     emit corrected( correction );
 }
