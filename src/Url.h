@@ -24,10 +24,11 @@
 #include <QUrlQuery>
 #endif
 
+#include "global.h"
 
 namespace lastfm
 {
-    class Url
+    class LASTFM_DLLEXPORT Url
     {
     public:
         explicit Url( const QUrl& url );
