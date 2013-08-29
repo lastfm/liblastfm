@@ -395,6 +395,16 @@ lastfm::Track::~Track()
 {
 }
 
+
+lastfm::Track
+lastfm::Track::clone() const
+{
+    Track clone = *this;
+    clone.d.detach();
+    return clone;
+}
+
+
 QDomElement
 lastfm::Track::toDomElement( QDomDocument& xml ) const
 {

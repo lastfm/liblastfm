@@ -118,6 +118,8 @@ public:
     Track( const Track& that );
     ~Track();
 
+    Track clone() const;
+
     /** this track and that track point to the same object, so they are the same
       * in fact. This doesn't do a deep data comparison. So even if all the 
       * fields are the same it will return false if they aren't in fact spawned

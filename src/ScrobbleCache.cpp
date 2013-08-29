@@ -148,10 +148,17 @@ ScrobbleCache::add( const QList<lastfm::Track>& tracks )
             int plays = track.extra( "playCount" ).toInt( &ok );
             if ( !ok ) plays = 1;
 
-            for ( int i = 0 ; i < plays ; ++i )
-                d->m_tracks += track;
-
+            // Add the track that the app is sharing and set it's scrobble status
+            d->m_tracks += track;
             MutableTrack( track ).setScrobbleStatus( Track::Cached );
+
+            // now add any duplicate plays as clones that are all 1 second apart
+            for ( int i = 1 ; i < plays ; ++i )
+            {
+                MutableTrack mt = MutableTrack( track.clone() );
+                mt.setTimeStamp( mt.timestamp().addSecs( -plays ) );
+                d->m_tracks += mt;
+            }
         }
     }
 
