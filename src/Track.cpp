@@ -335,8 +335,6 @@ TrackObject::onGotInfo()
 
     if ( lfm.parse( data ) )
     {
-        qDebug() << lfm;
-
         QString imageUrl = lfm["track"]["image size=small"].text();
         if ( !imageUrl.isEmpty() ) m_data.m_images[lastfm::AbstractType::SmallImage] = imageUrl;
         imageUrl = lfm["track"]["image size=medium"].text();
@@ -741,8 +739,6 @@ lastfm::Track::getInfo( QObject *receiver, const char *method, const QString &us
     // this is so the web services knows whether to use corrections or not
     if (!lastfm::ws::SessionKey.isEmpty()) map["sk"] = lastfm::ws::SessionKey;
 
-    qDebug() << map;
-
     QNetworkReply* reply = ws::get( map );
 
     TrackData::Observer observer;
@@ -822,8 +818,6 @@ lastfm::Track::updateNowPlaying( int duration ) const
     if ( !album().isNull() ) map["album"] = album();
     map["context"] = extra("playerId");
 
-    qDebug() << map;
-
     return ws::post(map);
 }
 
@@ -832,8 +826,6 @@ lastfm::Track::removeNowPlaying() const
 {
     QMap<QString, QString> map;
     map["method"] = "track.removeNowPlaying";
-
-    qDebug() << map;
 
     return ws::post(map);
 }
@@ -849,8 +841,6 @@ lastfm::Track::scrobble() const
     map["albumArtist"] = d->albumArtist;
     if ( !d->album.title().isEmpty() ) map["album"] = d->album.title();
     map["chosenByUser"] = source() == Track::LastFmRadio ? "0" : "1";
-
-    qDebug() << map;
 
     return ws::post(map);
 }
@@ -873,8 +863,6 @@ lastfm::Track::scrobble(const QList<lastfm::Track>& tracks)
         if ( !tracks[i].mbid().isNull() ) map["mbid[" + QString::number(i)  + "]"] = tracks[i].mbid();
         map["chosenByUser[" + QString::number(i) + "]"] = tracks[i].source() == Track::LastFmRadio ? "0" : "1";
     }
-
-    qDebug() << map;
 
     return ws::post(map);
 }

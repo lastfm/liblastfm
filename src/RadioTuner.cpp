@@ -190,7 +190,7 @@ RadioTuner::onTuneReturn()
 
     if ( lfm.parse( qobject_cast<QNetworkReply*>(sender()) ) )
     {
-        qDebug() << lfm;
+        qDebug() << "Tune successful!";
 
         d->m_station.setTitle( lfm["station"]["name"].text() );
         d->m_station.setUrl( lfm["station"]["url"].text() );
@@ -221,7 +221,7 @@ RadioTuner::onGetPlaylistReturn()
 
     if ( lfm.parse( qobject_cast<QNetworkReply*>(sender()) ) )
     {
-        qDebug() << lfm;
+        qDebug() << "Get playlist successful!";
 
         d->m_station.setTitle( lfm["playlist"]["title"].text() );
         // we don't get the radio url in the playlist
