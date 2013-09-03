@@ -156,7 +156,7 @@ ScrobbleCache::add( const QList<lastfm::Track>& tracks )
             for ( int i = 1 ; i < plays ; ++i )
             {
                 MutableTrack mt = MutableTrack( track.clone() );
-                mt.setTimeStamp( mt.timestamp().addSecs( -plays ) );
+                mt.setTimeStamp( mt.timestamp().addSecs( -i ) );
                 d->m_tracks += mt;
             }
         }
