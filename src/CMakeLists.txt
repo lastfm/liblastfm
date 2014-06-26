@@ -87,17 +87,17 @@ if(UNIX AND NOT APPLE)
     list(APPEND liblastfm_QT5_MODULES DBus)
 endif()
 
-add_library(lastfm SHARED ${liblastfm_SOURCES})
-qt5_use_modules(lastfm ${liblastfm_QT5_MODULES})
+add_library(${LASTFM_LIB_TARGET_NAME} SHARED ${liblastfm_SOURCES})
+qt5_use_modules(${LASTFM_LIB_TARGET_NAME} ${liblastfm_QT5_MODULES})
 
-target_link_libraries(lastfm ${liblastfm_LIBRARIES})
-set_target_properties(lastfm PROPERTIES
+target_link_libraries(${LASTFM_LIB_TARGET_NAME} ${liblastfm_LIBRARIES})
+set_target_properties(${LASTFM_LIB_TARGET_NAME} PROPERTIES
     VERSION ${LASTFM_VERSION_STRING}
     SOVERSION ${LASTFM_SOVERSION}
     COMPILE_DEFINITIONS LASTFM_LIB
 )
 
-install(TARGETS lastfm
+install(TARGETS ${LASTFM_LIB_TARGET_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

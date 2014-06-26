@@ -24,25 +24,25 @@ set(lastfm_fingerprint_HEADERS
     FingerprintableSource.h
 )
 
-add_library(lastfm_fingerprint SHARED ${lastfm_fingerprint_SOURCES})
+add_library(${FINGERPRINT_LIB_TARGET_NAME} SHARED ${lastfm_fingerprint_SOURCES})
 
-target_link_libraries(lastfm_fingerprint
-    lastfm
+target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME}
+    ${LASTFM_LIB_TARGET_NAME}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTCORE_LIBRARY}
     ${LIBSAMPLERATE_LIBRARY}
     ${LIBFFTW3_LIBRARY}
 )
 
-set_target_properties(lastfm_fingerprint PROPERTIES
+set_target_properties(${FINGERPRINT_LIB_TARGET_NAME} PROPERTIES
     COMPILE_DEFINITIONS LASTFM_FINGERPRINT_LIB
     VERSION ${LASTFM_VERSION_STRING}
     SOVERSION ${LASTFM_SOVERSION}
 )
 
-qt5_use_modules(lastfm_fingerprint Network Sql Xml)
+qt5_use_modules(${FINGERPRINT_LIB_TARGET_NAME} Network Sql Xml)
 
-install(TARGETS lastfm_fingerprint
+install(TARGETS ${FINGERPRINT_LIB_TARGET_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
