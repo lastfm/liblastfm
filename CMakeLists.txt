@@ -37,6 +37,7 @@ endif()
 if(Qt5Core_DIR)
     message(STATUS "Found Qt5! Please keep in mind, this is highly experimental and not our main development target..")
     include_directories(${Qt5Core_INCLUDE_DIRS})
+    find_package(Qt5DBus REQUIRED)
 
 #     macro(qt_wrap_ui)
 #         qt5_wrap_ui(${ARGN})
