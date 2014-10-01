@@ -35,6 +35,7 @@ if( NOT BUILD_WITH_QT4 )
 endif()
 
 if(Qt5Core_DIR)
+    set(LASTFM_LIB_VERSION_SUFFIX 5)
     message(STATUS "Found Qt5! Please keep in mind, this is highly experimental and not our main development target..")
     include_directories(${Qt5Core_INCLUDE_DIRS})
 
@@ -68,6 +69,12 @@ endif()
 if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")
 endif(MSVC)
+
+set(LASTFM_LIB_TARGET_NAME lastfm${LASTFM_LIB_VERSION_SUFFIX} CACHE
+    INTERNAL "Target name of liblastfm" FORCE)
+
+set(FINGERPRINT_LIB_TARGET_NAME lastfm_fingerprint${LASTFM_LIB_VERSION_SUFFIX} CACHE
+    INTERNAL "Target name of liblastfm_fingerprint" FORCE)
 
 # main library
 add_subdirectory(src)

@@ -9,7 +9,7 @@ macro(lastfm_add_test test_class)
     qt5_use_modules(${LASTFM_TEST_CLASS}Test Core Test Xml Network)
 
     target_link_libraries(${LASTFM_TEST_CLASS}Test
-        lastfm
+        ${LASTFM_LIB_TARGET_NAME}
         ${QT_QTTEST_LIBRARY}
         ${QT_QTCORE_LIBRARY}
     )
