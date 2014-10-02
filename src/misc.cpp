@@ -62,7 +62,7 @@ static QDir dataDotDot()
     return QDir::home();
 #elif defined(Q_OS_MAC)
     return QDir::home().filePath( "Library/Application Support" );
-#elif defined(Q_OS_UNIX)
+#elif defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
     return QDir::home().filePath( ".local/share" );
 #else
     return QDir::home();
@@ -199,7 +199,7 @@ lastfm::platform()
 
         default:                      return "Unknown";
     }
-#elif defined Q_OS_UNIX
+#elif defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
     return "UNIX X11";
 #else
     return "Unknown";
