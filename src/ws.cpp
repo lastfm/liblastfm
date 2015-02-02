@@ -112,7 +112,7 @@ static QUrl baseUrl()
     QUrl url;
 
     if(!lastfm::ws::Server.isEmpty()) {
-        url.setUrl(lastfm::ws::Server);
+        url.setUrl( lastfm::ws::Server );
     }
     else {
         url.setScheme( lastfm::ws::scheme() == lastfm::ws::Https ? "https" : "http" );
