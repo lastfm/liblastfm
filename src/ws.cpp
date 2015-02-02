@@ -110,8 +110,15 @@ lastfm::ws::host()
 static QUrl baseUrl()
 {
     QUrl url;
-    url.setScheme( lastfm::ws::scheme() == lastfm::ws::Https ? "https" : "http" );
-    url.setHost( lastfm::ws::host() );
+
+    if(!lastfm::ws::Server.isEmpty()) {
+        url.setUrl(lastfm::ws::Server);
+    }
+    else {
+        url.setScheme( lastfm::ws::scheme() == lastfm::ws::Https ? "https" : "http" );
+        url.setHost( lastfm::ws::host() );
+    }
+
     url.setPath( "/2.0/" );
 
     return url;

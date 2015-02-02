@@ -61,7 +61,12 @@ namespace lastfm
           * You only need to authenticate once, and that key lasts forever!
           */
         LASTFM_DLLEXPORT extern QString SessionKey;      
-        
+
+        /** Override the host with a compatible scrobbling API server.
+          * The scheme should be included!
+          */
+        LASTFM_DLLEXPORT extern QString Server;
+
         enum Error
         {
             NoError = 1, // because last.fm error numbers start at 2
