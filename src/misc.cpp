@@ -44,6 +44,15 @@ lastfm::dir::bundle()
 #endif
 
 
+QDir ensurePathExists( QDir dir )
+{
+    if ( !dir.exists() )
+        dir.mkpath( QString( "." ) );
+
+    return dir;
+}
+
+
 static QDir dataDotDot()
 {
 #ifdef WIN32
@@ -61,9 +70,9 @@ static QDir dataDotDot()
     }
     return QDir::home();
 #elif defined(Q_OS_MAC)
-    return QDir::home().filePath( "Library/Application Support" );
+    return ensurePathExists( QDir::home().filePath( "Library/Application Support" ) );
 #elif defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
-    return QDir::home().filePath( ".local/share" );
+    return ensurePathExists( QDir::home().filePath( ".local/share" ) );
 #else
     return QDir::home();
 #endif
@@ -73,7 +82,7 @@ static QDir dataDotDot()
 QDir
 lastfm::dir::runtimeData()
 {
-    return dataDotDot().filePath( "Last.fm" );
+    return ensurePathExists( dataDotDot().filePath( "Last.fm" ) );
 }
 
 
@@ -81,7 +90,7 @@ QDir
 lastfm::dir::logs()
 {
 #ifdef Q_OS_MAC
-    return QDir::home().filePath( "Library/Logs/Last.fm" );
+    return ensurePathExists( QDir::home().filePath( "Library/Logs/Last.fm" ) );
 #else
     return runtimeData();    
 #endif
@@ -92,9 +101,9 @@ QDir
 lastfm::dir::cache()
 {
 #ifdef Q_OS_MAC
-    return QDir::home().filePath( "Library/Caches/Last.fm" );
+    return ensurePathExists( QDir::home().filePath( "Library/Caches/Last.fm" ) );
 #else
-    return runtimeData().filePath( "cache" );
+    return ensurePathExists( runtimeData().filePath( "cache" ) );
 #endif
 }
 
