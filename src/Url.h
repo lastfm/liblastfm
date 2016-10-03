@@ -23,6 +23,7 @@
 
 #include <QUrl>
 
+#include "global.h"
 
 namespace lastfm
 {
