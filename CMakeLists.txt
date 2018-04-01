@@ -20,6 +20,7 @@ option(BUILD_TESTS "Build liblastfm tests" ON)
 
 # installation dirs
 include(GNUInstallDirs)
+include(FeatureSummary)
 
 #cmake module path
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Modules")
@@ -96,3 +97,5 @@ if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
