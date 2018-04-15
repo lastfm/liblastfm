@@ -56,9 +56,6 @@ if(NOT BUILD_WITH_QT4)
 #     endmacro()
 else()
     find_package(Qt4 COMPONENTS QtCore QtNetwork QtXml REQUIRED)
-
-    macro(qt5_use_modules)
-    endmacro()
 endif()
 
 
