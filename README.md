@@ -93,6 +93,6 @@ though, auto-determining proxy settings on Windows and OS X for instance.
 ## Public Headers
 
 1. Header guards should be prefixed with LASTFM, eg. LASTFM_WS_REPLY_H
-2. #includes should be to the system path eg. #include <lastfm/Scrobbler.h>
+2. #includes should be to the system path eg. `#include <lastfm/Scrobbler.h>`
 3. Don't make a header public unless it is absolutely required!
 4. All headers under src/ (not subfolders) are public by default
