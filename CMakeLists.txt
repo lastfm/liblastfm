@@ -20,6 +20,7 @@ option(BUILD_TESTS "Build liblastfm tests" ON)
 
 # installation dirs
 include(GNUInstallDirs)
+include(FeatureSummary)
 
 #cmake module path
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Modules")
@@ -27,19 +28,18 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Module
 # setup qt stuff
 set(CMAKE_AUTOMOC ON)
 
-option(BUILD_WITH_QT4 "Build liblastfm with Qt4 no matter if Qt5 was found" OFF)
+option(BUILD_WITH_QT4 "Build liblastfm with Qt4" OFF)
 
-if( NOT BUILD_WITH_QT4 )
-    # try Qt5 first, and prefer that if found
-    find_package(Qt5Core QUIET)
-endif()
+if(NOT BUILD_WITH_QT4)
+    find_package(Qt5 REQUIRED COMPONENTS Core Network Xml CONFIG)
 
-if(Qt5Core_DIR)
+    if(BUILD_FINGERPRINT)
+        find_package(Qt5Sql REQUIRED CONFIG)
+    endif()
+
     set(LASTFM_LIB_VERSION_SUFFIX 5)
-    message(STATUS "Found Qt5! Please keep in mind, this is highly experimental and not our main development target..")
-    include_directories(${Qt5Core_INCLUDE_DIRS})
     if(UNIX AND NOT APPLE)
-        find_package(Qt5DBus REQUIRED)
+        find_package(Qt5DBus REQUIRED CONFIG)
     endif()
 
 #     macro(qt_wrap_ui)
@@ -56,9 +56,6 @@ if(Qt5Core_DIR)
 #     endmacro()
 else()
     find_package(Qt4 COMPONENTS QtCore QtNetwork QtXml REQUIRED)
-
-    macro(qt5_use_modules)
-    endmacro()
 endif()
 
 
@@ -97,3 +94,5 @@ if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
