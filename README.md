@@ -29,7 +29,26 @@ Additionally, to build it you will need:
 
 We recommend that you use Homebrew to install dependancies http://mxcl.github.com/homebrew/
 
-    brew install qt
+In order to install QT 5 run:
+```
+brew install qt
+```
+
+In order to install QT 4.8 run:
+
+```
+brew install cartr/qt4/qt@4
+brew install cartr/qt4/qt-webkit@2.3
+```
+Don't forget to turn on the BUILD_WITH_QT4 option in CMakeLists.txt
+
+
+And for other dependencies:
+```
+brew install cmake
+brew install fftw
+brew install libsamplerate
+```
 
 ## Linux/*NIX
 
