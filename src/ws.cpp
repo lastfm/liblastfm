@@ -32,7 +32,8 @@
 #include <QMutex>
 #include <QSslSocket>
 
-static lastfm::ws::Scheme theScheme = lastfm::ws::Http;
+static lastfm::ws::Scheme theScheme = lastfm::ws::Https;
+static QString theHost = LASTFM_WS_HOSTNAME;
 static QMap< QThread*, QNetworkAccessManager* > threadNamHash;
 static QSet< QThread* > ourNamSet;
 static QMutex namAccessMutex;
@@ -96,15 +97,13 @@ lastfm::ws::setScheme( lastfm::ws::Scheme scheme )
 QString
 lastfm::ws::host()
 {
-    QStringList const args = QCoreApplication::arguments();
-    if (args.contains( "--debug"))
-        return "ws.staging.audioscrobbler.com";
+    return theHost;
+}
 
-    int const n = args.indexOf( "--host" );
-    if (n != -1 && args.count() > n+1)
-        return args[n+1];
-
-    return LASTFM_WS_HOSTNAME;
+void
+lastfm::ws::setHost( QString host )
+{
+    theHost = host;
 }
 
 static QUrl baseUrl()

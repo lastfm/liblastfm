@@ -44,7 +44,7 @@ namespace lastfm
 
     namespace ws
     {
-        /** both of these are provided when you register at http://last.fm/api */
+        /** both of these are provided when you register at https://www.last.fm/api/ */
         LASTFM_DLLEXPORT extern const char* SharedSecret;
         LASTFM_DLLEXPORT extern const char* ApiKey;
     
@@ -54,8 +54,8 @@ namespace lastfm
 
         /** Some webservices require authentication. See the following
           * documentation:
-          * http://www.last.fm/api/authentication
-          * http://www.last.fm/api/desktopauth
+          * https://www.last.fm/api/authentication
+          * https://www.last.fm/api/desktopauth
           * You have to authenticate and then assign to SessionKey, liblastfm does
           * not do that for you. Also we do not store this. You should store this!
           * You only need to authenticate once, and that key lasts forever!
@@ -122,9 +122,10 @@ namespace lastfm
         LASTFM_DLLEXPORT void setScheme( Scheme scheme );
         LASTFM_DLLEXPORT Scheme scheme();
         
+        LASTFM_DLLEXPORT void setHost( QString host );
         LASTFM_DLLEXPORT QString host();
 
-        /** the map needs a method entry, as per http://last.fm/api */
+        /** the map needs a method entry, as per https://www.last.fm/api/ */
         LASTFM_DLLEXPORT QUrl url( QMap<QString, QString>, bool sessionKey = true);
         LASTFM_DLLEXPORT QNetworkReply* get( QMap<QString, QString> );
         /** generates api sig, includes api key, and posts, don't add the api
