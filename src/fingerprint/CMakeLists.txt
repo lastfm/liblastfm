@@ -1,12 +1,3 @@
-
-#find_package(Qt4 COMPONENTS QtCore QtSql REQUIRED)
-#FIXME: find modules are horrible, port them to find_package_handle_standard_args
-find_package(LibSamplerate REQUIRED)
-find_package(LibFFTW3 REQUIRED)
-
-include_directories(${LIBFFTW3_INCLUDE_DIR})
-include_directories(${LIBSAMPLERATE_INCLUDE_DIR})
-include_directories(${QT_INCLUDES})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/..)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/..)
 
@@ -34,15 +25,11 @@ set_target_properties(${FINGERPRINT_LIB_TARGET_NAME} PROPERTIES
 
 target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME}
     ${LASTFM_LIB_TARGET_NAME}
-    ${LIBSAMPLERATE_LIBRARY}
-    ${LIBFFTW3_LIBRARY}
+    PkgConfig::LibSamplerate
+    PkgConfig::FFTW3F
 )
 
-if(Qt5Core_DIR)
-    target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME} Qt5::Network Qt5::Sql Qt5::Xml)
-else()
-    target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTSQL_LIBRARY})
-endif()
+target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME} Qt5::Network Qt5::Sql Qt5::Xml)
 
 install(TARGETS ${FINGERPRINT_LIB_TARGET_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

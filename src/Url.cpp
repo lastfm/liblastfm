@@ -20,25 +20,19 @@
 
 #include "Url.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
 #include <QUrlQuery>
-#endif
 
 class lastfm::UrlPrivate
 {
     public:
         UrlPrivate( const QUrl& url );
         QUrl url;
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
         QUrlQuery query;
-#endif
 };
 
 lastfm::UrlPrivate::UrlPrivate( const QUrl& u )
     : url( u )
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     , query( u.query() )
-#endif
 {
 }
 
@@ -55,12 +49,8 @@ lastfm::Url::~Url()
 void
 lastfm::Url::addQueryItem( const QString& key, const QString& value )
 {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     d->query.addQueryItem( key, value );
     d->url.setQuery( d->query );
-#else
-    d->url.addQueryItem( key, value );
-#endif
 }
 
 QUrl
@@ -73,9 +63,7 @@ lastfm::Url&
 lastfm::Url::operator=( const lastfm::Url& that )
 {
     d->url = that.d->url;
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     d->query = that.d->query;
-#endif
     return *this;
 }
 

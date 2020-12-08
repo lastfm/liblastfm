@@ -1,8 +1,6 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/global.h.in ${CMAKE_CURRENT_BINARY_DIR}/global.h)
 
-
-add_definitions(${QT_DEFINITIONS})
-include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(liblastfm_SOURCES
         ws.cpp
@@ -66,20 +64,9 @@ endif()
 
 add_library(${LASTFM_LIB_TARGET_NAME} SHARED ${liblastfm_SOURCES})
 
-if(Qt5Core_DIR)
-    target_link_libraries(${LASTFM_LIB_TARGET_NAME} Qt5::Network Qt5::Xml)
-    if(UNIX AND NOT APPLE)
-        target_link_libraries(${LASTFM_LIB_TARGET_NAME} Qt5::DBus)
-    endif()
-else()
-    target_link_libraries(${LASTFM_LIB_TARGET_NAME}
-        ${QT_QTCORE_LIBRARY}
-        ${QT_QTNETWORK_LIBRARY}
-        ${QT_QTXML_LIBRARY}
-    )
-    if(UNIX AND NOT APPLE)
-        target_link_libraries(${LASTFM_LIB_TARGET_NAME} ${QT_QTDBUS_LIBRARY})
-    endif()
+target_link_libraries(${LASTFM_LIB_TARGET_NAME} Qt5::Network Qt5::Xml)
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${LASTFM_LIB_TARGET_NAME} Qt5::DBus)
 endif()
 
 if(WIN32 AND NOT MINGW)
