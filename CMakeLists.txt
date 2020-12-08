@@ -28,36 +28,33 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Module
 # setup qt stuff
 set(CMAKE_AUTOMOC ON)
 
-option(BUILD_WITH_QT4 "Build liblastfm with Qt4" OFF)
+find_package(Qt5 CONFIG REQUIRED COMPONENTS Core Network Xml)
 
-if(NOT BUILD_WITH_QT4)
-    find_package(Qt5 REQUIRED COMPONENTS Core Network Xml CONFIG)
-
-    if(BUILD_FINGERPRINT)
-        find_package(Qt5Sql REQUIRED CONFIG)
-    endif()
-
-    set(LASTFM_LIB_VERSION_SUFFIX 5)
-    if(UNIX AND NOT APPLE)
-        find_package(Qt5DBus REQUIRED CONFIG)
-    endif()
-
-#     macro(qt_wrap_ui)
-#         qt5_wrap_ui(${ARGN})
-#     endmacro()
-#
-#     macro(qt_add_resources)
-#         qt5_add_resources(${ARGN})
-#     endmacro()
-#
-#     find_package(Qt5LinguistTools REQUIRED)
-#     macro(qt_add_translation)
-#         qt5_add_translation(${ARGN})
-#     endmacro()
-else()
-    find_package(Qt4 COMPONENTS QtCore QtNetwork QtXml REQUIRED)
+if(BUILD_FINGERPRINT)
+    find_package(Qt5Sql CONFIG REQUIRED)
 endif()
 
+if(BUILD_TESTS)
+    find_package(Qt5Test CONFIG REQUIRED)
+endif()
+
+set(LASTFM_LIB_VERSION_SUFFIX 5)
+if(UNIX AND NOT APPLE)
+    find_package(Qt5DBus CONFIG REQUIRED)
+endif()
+
+# macro(qt_wrap_ui)
+#     qt5_wrap_ui(${ARGN})
+# endmacro()
+#
+# macro(qt_add_resources)
+#     qt5_add_resources(${ARGN})
+# endmacro()
+#
+# find_package(Qt5LinguistTools REQUIRED)
+# macro(qt_add_translation)
+#     qt5_add_translation(${ARGN})
+# endmacro()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-fno-operator-names -fvisibility-inlines-hidden -fvisibility=hidden")

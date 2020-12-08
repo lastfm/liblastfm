@@ -31,9 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QStringList>
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
-    #include <QUrlQuery>
-#endif
+#include <QUrlQuery>
 #include <fstream>
 
 #include "User.h"

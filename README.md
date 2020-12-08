@@ -17,7 +17,7 @@ Channel: #last.desktop
 
 liblastfm requires:
 
-* Qt 4.8 http://qt.digia.com/
+* Qt 5.0 https://www.qt.io/
 * FFTW http://www.fftw.org/
 * libsamplerate http://www.mega-nerd.com/SRC/
 
@@ -27,23 +27,14 @@ Additionally, to build it you will need:
 
 ## Mac OS X
 
-We recommend that you use Homebrew to install dependancies http://mxcl.github.com/homebrew/
+We recommend that you use Homebrew to install dependancies https://brew.sh/
 
-In order to install QT 5 run:
+In order to install Qt 5 run:
 ```
 brew install qt
 ```
 
-In order to install QT 4.8 run:
-
-```
-brew install cartr/qt4/qt@4
-brew install cartr/qt4/qt-webkit@2.3
-```
-Don't forget to turn on the BUILD_WITH_QT4 option in CMakeLists.txt
-
-
-And for other dependencies:
+For other dependencies:
 ```
 brew install cmake
 brew install fftw
@@ -52,9 +43,9 @@ brew install libsamplerate
 
 ## Linux/*NIX
 
-Do something like this:
+On Debian-based systems, do something like this:
 
-    sudo apt-get install qt4-qmake pkg-config g++ libqt4-dev cmake libfftw-dev libsamplerate0-dev
+    sudo apt-get install qt5-qmake pkg-config g++ qtbase5-dev cmake libfftw-dev libsamplerate0-dev
 
 Please note, we have only tested on Linux, but we think it'll work on all
 varieties of UNIX. If it doesn't, report the bug to eartle on GitHub.
