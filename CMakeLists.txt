@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.6)
 project(liblastfm)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
@@ -21,6 +21,7 @@ option(BUILD_TESTS "Build liblastfm tests" ON)
 # installation dirs
 include(GNUInstallDirs)
 include(FeatureSummary)
+include(FindPkgConfig)
 
 #cmake module path
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Modules")
@@ -32,9 +33,12 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS Core Network Xml)
 
 if(BUILD_FINGERPRINT)
     find_package(Qt5Sql CONFIG REQUIRED)
-    #FIXME: find modules are horrible, port them to find_package_handle_standard_args
-    find_package(LibSamplerate REQUIRED)
-    find_package(LibFFTW3 REQUIRED)
+
+    pkg_check_modules(LibSamplerate REQUIRED IMPORTED_TARGET samplerate)
+    add_feature_info(LibSamplerate LibSamplerate_FOUND "Required for lastfm-fingerprint library")
+
+    pkg_check_modules(FFTW3F REQUIRED IMPORTED_TARGET fftw3f>=3.0)
+    add_feature_info(FFTW3F FFTW3F_FOUND "Required for lastfm-fingerprint library")
 endif()
 
 if(BUILD_TESTS)

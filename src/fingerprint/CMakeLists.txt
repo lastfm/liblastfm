@@ -1,5 +1,3 @@
-include_directories(${LIBFFTW3_INCLUDE_DIR})
-include_directories(${LIBSAMPLERATE_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/..)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/..)
 
@@ -27,8 +25,8 @@ set_target_properties(${FINGERPRINT_LIB_TARGET_NAME} PROPERTIES
 
 target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME}
     ${LASTFM_LIB_TARGET_NAME}
-    ${LIBSAMPLERATE_LIBRARY}
-    ${LIBFFTW3_LIBRARY}
+    PkgConfig::LibSamplerate
+    PkgConfig::FFTW3F
 )
 
 target_link_libraries(${FINGERPRINT_LIB_TARGET_NAME} Qt5::Network Qt5::Sql Qt5::Xml)
