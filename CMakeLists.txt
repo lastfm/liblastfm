@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 2.8.12)
 project(liblastfm)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
@@ -32,6 +32,9 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS Core Network Xml)
 
 if(BUILD_FINGERPRINT)
     find_package(Qt5Sql CONFIG REQUIRED)
+    #FIXME: find modules are horrible, port them to find_package_handle_standard_args
+    find_package(LibSamplerate REQUIRED)
+    find_package(LibFFTW3 REQUIRED)
 endif()
 
 if(BUILD_TESTS)

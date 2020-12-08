@@ -1,8 +1,3 @@
-
-#FIXME: find modules are horrible, port them to find_package_handle_standard_args
-find_package(LibSamplerate REQUIRED)
-find_package(LibFFTW3 REQUIRED)
-
 include_directories(${LIBFFTW3_INCLUDE_DIR})
 include_directories(${LIBSAMPLERATE_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/..)
