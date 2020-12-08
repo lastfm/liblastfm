@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(liblastfm)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
-
 # general settings
 set(LASTFM_SOVERSION 1)
 set(LASTFM_VERSION "0x00010100")
@@ -22,9 +20,6 @@ option(BUILD_TESTS "Build liblastfm tests" ON)
 include(GNUInstallDirs)
 include(FeatureSummary)
 include(FindPkgConfig)
-
-#cmake module path
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
 # setup qt stuff
 set(CMAKE_AUTOMOC ON)
